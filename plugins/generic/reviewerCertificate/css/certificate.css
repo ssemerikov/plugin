@@ -1,0 +1,320 @@
+/**
+ * @file plugins/generic/reviewerCertificate/css/certificate.css
+ *
+ * Copyright (c) 2024
+ * Distributed under the GNU GPL v3.
+ *
+ * Stylesheet for reviewer certificate plugin
+ */
+
+/* Certificate Section in Reviewer Dashboard */
+.reviewer-certificate-section {
+    margin: 20px 0;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.reviewer-certificate-section h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.reviewer-certificate-section p {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+/* Certificate Download Button */
+.certificate-download-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff !important;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.certificate-download-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.certificate-download-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.certificate-download-button.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.certificate-download-button .fa {
+    margin-right: 8px;
+}
+
+/* Certificate Settings Form Styles */
+#certificateSettingsForm .pkp_form {
+    max-width: 100%;
+}
+
+#certificateSettingsForm .fbvFormSection {
+    margin-bottom: 20px;
+}
+
+#certificateSettingsForm .description {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+#certificateSettingsForm textarea {
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+/* Template Variables Display */
+.template-variables {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+    list-style: none;
+    padding: 15px;
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.template-variables li {
+    font-size: 0.85em;
+}
+
+.template-variables code {
+    display: block;
+    background: #fff;
+    padding: 5px 8px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid #ddd;
+    word-break: break-all;
+}
+
+/* Color Preview */
+#colorPreview {
+    vertical-align: middle;
+}
+
+/* File Upload Styling */
+.pkp_form_file {
+    padding: 10px;
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    background: #fafafa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pkp_form_file:hover {
+    border-color: #999;
+    background: #f0f0f0;
+}
+
+/* Certificate Verification Form */
+#certificateVerificationForm {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 30px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#certificateVerificationForm h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+#certificateVerificationForm input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    margin-bottom: 15px;
+}
+
+#certificateVerificationForm button {
+    width: 100%;
+    padding: 12px;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#certificateVerificationForm button:hover {
+    background: #764ba2;
+}
+
+#certificateVerificationForm button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Verification Result */
+#verificationResult {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#verificationResult .success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+#verificationResult .error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+#verificationResult h4 {
+    margin-top: 0;
+    font-size: 1.1em;
+}
+
+#verificationResult p {
+    margin: 8px 0;
+}
+
+/* Certificate Icon */
+.fa-certificate {
+    color: #ffd700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Preview Button */
+.preview-certificate-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #28a745;
+    color: #fff !important;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.preview-certificate-btn:hover {
+    background: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .template-variables {
+        grid-template-columns: 1fr;
+    }
+
+    .certificate-download-button {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+
+    .reviewer-certificate-section {
+        padding: 15px;
+    }
+
+    #certificateVerificationForm {
+        padding: 20px;
+        margin: 10px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .certificate-download-button,
+    .preview-certificate-btn,
+    #certificateVerificationForm {
+        display: none;
+    }
+}
+
+/* Animation for certificate button */
+@keyframes certificatePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.certificate-download-button.new-certificate {
+    animation: certificatePulse 2s infinite;
+}
+
+/* Badge for certificate count */
+.certificate-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    background: #667eea;
+    color: #fff;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* Success message after certificate generation */
+.certificate-success-message {
+    padding: 15px;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    color: #155724;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.certificate-success-message .fa {
+    margin-right: 8px;
+    color: #28a745;
+}
+
+/* Loading spinner */
+.certificate-loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
