@@ -13,9 +13,8 @@
 namespace APP\plugins\generic\reviewerCertificate\classes\migration;
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Builder;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Support\Facades\Schema;
 
 class ReviewerCertificateInstallMigration extends Migration {
 
@@ -24,7 +23,7 @@ class ReviewerCertificateInstallMigration extends Migration {
      * @return void
      */
     public function up(): void {
-        Capsule::schema()->create('reviewer_certificate_templates', function (Blueprint $table) {
+        Schema::create('reviewer_certificate_templates', function (Blueprint $table) {
             $table->bigIncrements('template_id');
             $table->bigInteger('context_id');
             $table->string('template_name', 255);
@@ -47,7 +46,7 @@ class ReviewerCertificateInstallMigration extends Migration {
             $table->index(['context_id'], 'reviewer_certificate_templates_context_id');
         });
 
-        Capsule::schema()->create('reviewer_certificates', function (Blueprint $table) {
+        Schema::create('reviewer_certificates', function (Blueprint $table) {
             $table->bigIncrements('certificate_id');
             $table->bigInteger('reviewer_id');
             $table->bigInteger('submission_id');
@@ -66,7 +65,7 @@ class ReviewerCertificateInstallMigration extends Migration {
             $table->unique(['review_id']);
         });
 
-        Capsule::schema()->create('reviewer_certificate_settings', function (Blueprint $table) {
+        Schema::create('reviewer_certificate_settings', function (Blueprint $table) {
             $table->bigInteger('template_id');
             $table->string('locale', 14)->default('');
             $table->string('setting_name', 255);
@@ -83,8 +82,8 @@ class ReviewerCertificateInstallMigration extends Migration {
      * @return void
      */
     public function down(): void {
-        Capsule::schema()->dropIfExists('reviewer_certificate_settings');
-        Capsule::schema()->dropIfExists('reviewer_certificates');
-        Capsule::schema()->dropIfExists('reviewer_certificate_templates');
+        Schema::dropIfExists('reviewer_certificate_settings');
+        Schema::dropIfExists('reviewer_certificates');
+        Schema::dropIfExists('reviewer_certificate_templates');
     }
 }
