@@ -22,16 +22,21 @@ class ReviewerCertificatePlugin extends GenericPlugin {
     public function register($category, $path, $mainContextId = null) {
         $success = parent::register($category, $path, $mainContextId);
 
-        if ($success && $this->getEnabled($mainContextId)) {
-            // Import and register DAOs
-            $this->import('classes.CertificateDAO');
-            $certificateDao = new CertificateDAO();
-            DAORegistry::registerDAO('CertificateDAO', $certificateDao);
+        if ($success) {
+            // Load locale data
+            $this->loadLocaleData();
 
-            // Register hooks
-            HookRegistry::register('LoadHandler', array($this, 'setupHandler'));
-            HookRegistry::register('TemplateManager::display', array($this, 'addCertificateButton'));
-            HookRegistry::register('reviewassignmentdao::_updateobject', array($this, 'handleReviewComplete'));
+            if ($this->getEnabled($mainContextId)) {
+                // Import and register DAOs
+                $this->import('classes.CertificateDAO');
+                $certificateDao = new CertificateDAO();
+                DAORegistry::registerDAO('CertificateDAO', $certificateDao);
+
+                // Register hooks
+                HookRegistry::register('LoadHandler', array($this, 'setupHandler'));
+                HookRegistry::register('TemplateManager::display', array($this, 'addCertificateButton'));
+                HookRegistry::register('reviewassignmentdao::_updateobject', array($this, 'handleReviewComplete'));
+            }
         }
 
         return $success;
