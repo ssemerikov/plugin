@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
+
+<!--
+  * plugins/generic/reviewerCertificate/locale/en_US/locale.xml
+  *
+  * Copyright (c) 2024
+  * Distributed under the GNU GPL v3.
+  *
+  * Localization strings
+  -->
+
+<locale name="en_US" full_name="U.S. English">
+	<!-- Plugin metadata -->
+	<message key="plugins.generic.reviewerCertificate.displayName">Reviewer Certificate Plugin</message>
+	<message key="plugins.generic.reviewerCertificate.description">Enables reviewers to generate and download personalized PDF certificates of recognition after completing reviews.</message>
+
+	<!-- Certificate titles -->
+	<message key="plugins.generic.reviewerCertificate.certificateTitle">Certificate of Review</message>
+	<message key="plugins.generic.reviewerCertificate.certificateSubject">Peer Review Certificate</message>
+
+	<!-- Dashboard messages -->
+	<message key="plugins.generic.reviewerCertificate.certificateAvailable">Your Certificate is Ready!</message>
+	<message key="plugins.generic.reviewerCertificate.certificateAvailableDescription">Thank you for completing this review. You can now download your certificate of recognition.</message>
+	<message key="plugins.generic.reviewerCertificate.downloadCertificate">Download Certificate</message>
+
+	<!-- Settings form -->
+	<message key="plugins.generic.reviewerCertificate.settings">Certificate Settings</message>
+	<message key="plugins.generic.reviewerCertificate.settings.description">Configure certificate templates and eligibility criteria for reviewers.</message>
+	<message key="plugins.generic.reviewerCertificate.settings.templateSettings">Certificate Template Settings</message>
+
+	<!-- Background Image -->
+	<message key="plugins.generic.reviewerCertificate.settings.backgroundImage">Background Image</message>
+	<message key="plugins.generic.reviewerCertificate.settings.backgroundImageDescription">Upload a background image for the certificate (JPG or PNG, recommended size: 2100x2970 pixels for A4)</message>
+	<message key="plugins.generic.reviewerCertificate.settings.currentImage">Current background image</message>
+
+	<!-- Header Text -->
+	<message key="plugins.generic.reviewerCertificate.settings.headerText">Header Text</message>
+	<message key="plugins.generic.reviewerCertificate.settings.headerTextDescription">The main heading displayed at the top of the certificate</message>
+	<message key="plugins.generic.reviewerCertificate.settings.headerTextRequired">Header text is required</message>
+
+	<!-- Body Template -->
+	<message key="plugins.generic.reviewerCertificate.settings.bodyTemplate">Certificate Body Template</message>
+	<message key="plugins.generic.reviewerCertificate.settings.bodyTemplateDescription">The main content of the certificate. Use template variables to insert dynamic content.</message>
+	<message key="plugins.generic.reviewerCertificate.settings.bodyTemplateRequired">Certificate body template is required</message>
+
+	<!-- Footer Text -->
+	<message key="plugins.generic.reviewerCertificate.settings.footerText">Footer Text</message>
+	<message key="plugins.generic.reviewerCertificate.settings.footerTextDescription">Optional text displayed at the bottom of the certificate</message>
+
+	<!-- Available Variables -->
+	<message key="plugins.generic.reviewerCertificate.settings.availableVariables">Available Template Variables</message>
+	<message key="plugins.generic.reviewerCertificate.settings.availableVariablesDescription">Use these variables in your templates to insert dynamic content:</message>
+	<message key="plugins.generic.reviewerCertificate.settings.defaultTemplate">Default template</message>
+	<message key="plugins.generic.reviewerCertificate.settings.useDefaultTemplate">Use default template</message>
+
+	<!-- Appearance settings -->
+	<message key="plugins.generic.reviewerCertificate.settings.appearance">Appearance Settings</message>
+	<message key="plugins.generic.reviewerCertificate.settings.fontFamily">Font Family</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.helvetica">Helvetica</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.times">Times New Roman</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.courier">Courier</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.dejavusans">DejaVu Sans</message>
+	<message key="plugins.generic.reviewerCertificate.settings.fontSize">Font Size</message>
+	<message key="plugins.generic.reviewerCertificate.settings.textColor">Text Color (RGB)</message>
+	<message key="plugins.generic.reviewerCertificate.settings.textColorDescription">Specify the text color using RGB values (0-255 for each component)</message>
+
+	<!-- Eligibility settings -->
+	<message key="plugins.generic.reviewerCertificate.settings.eligibility">Eligibility Criteria</message>
+	<message key="plugins.generic.reviewerCertificate.settings.minimumReviews">Minimum Completed Reviews</message>
+	<message key="plugins.generic.reviewerCertificate.settings.minimumReviewsDescription">The minimum number of completed reviews required before a reviewer can receive a certificate</message>
+	<message key="plugins.generic.reviewerCertificate.settings.minimumReviewsInvalid">Minimum reviews must be a number greater than or equal to 1</message>
+
+	<!-- Verification -->
+	<message key="plugins.generic.reviewerCertificate.settings.verification">Verification Options</message>
+	<message key="plugins.generic.reviewerCertificate.settings.includeQRCode">Include QR code for certificate verification</message>
+	<message key="plugins.generic.reviewerCertificate.settings.previewCertificate">Preview Certificate</message>
+	<message key="plugins.generic.reviewerCertificate.settings.invalidImageType">Invalid image type. Please upload a JPG or PNG file.</message>
+	<message key="plugins.generic.reviewerCertificate.settings.uploadFailed">File upload failed. Please try again.</message>
+
+	<!-- Error messages -->
+	<message key="plugins.generic.reviewerCertificate.error.reviewNotCompleted">This review has not been completed yet. Certificates are only available for completed reviews.</message>
+	<message key="plugins.generic.reviewerCertificate.error.noCertificateCode">No certificate code provided</message>
+	<message key="plugins.generic.reviewerCertificate.error.invalidCertificate">Invalid certificate code. This certificate could not be verified.</message>
+	<message key="plugins.generic.reviewerCertificate.error.noReviewersSelected">No reviewers selected for batch certificate generation</message>
+	<message key="plugins.generic.reviewerCertificate.error.accessDenied">Access denied. You do not have permission to download this certificate.</message>
+
+	<!-- Verification -->
+	<message key="plugins.generic.reviewerCertificate.verify.title">Verify Certificate</message>
+	<message key="plugins.generic.reviewerCertificate.verify.description">Enter a certificate code to verify its authenticity</message>
+	<message key="plugins.generic.reviewerCertificate.verify.code">Certificate Code</message>
+	<message key="plugins.generic.reviewerCertificate.verify.button">Verify Certificate</message>
+	<message key="plugins.generic.reviewerCertificate.verify.valid">Certificate Valid</message>
+	<message key="plugins.generic.reviewerCertificate.verify.invalid">Certificate Invalid</message>
+
+	<!-- Batch generation -->
+	<message key="plugins.generic.reviewerCertificate.batch.title">Batch Certificate Generation</message>
+	<message key="plugins.generic.reviewerCertificate.batch.description">Generate certificates for multiple reviewers at once</message>
+	<message key="plugins.generic.reviewerCertificate.batch.generated">{$count} certificate(s) generated successfully</message>
+
+	<!-- Statistics -->
+	<message key="plugins.generic.reviewerCertificate.stats.totalIssued">Total Certificates Issued</message>
+	<message key="plugins.generic.reviewerCertificate.stats.totalDownloads">Total Downloads</message>
+	<message key="plugins.generic.reviewerCertificate.stats.averageDownloads">Average Downloads per Certificate</message>
+</locale>
