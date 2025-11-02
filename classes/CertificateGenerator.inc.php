@@ -11,7 +11,36 @@
  * @brief Generates PDF certificates for reviewers
  */
 
-require_once('lib/pkp/lib/vendor/tecnickcom/tcpdf/tcpdf.php');
+// Load TCPDF library - try multiple locations
+$tcpdfLocations = array(
+    // Plugin's bundled TCPDF
+    dirname(__FILE__, 2) . '/lib/tcpdf/tcpdf.php',
+    // OJS 3.4 location
+    Core::getBaseDir() . '/lib/pkp/lib/vendor/tecnickcom/tcpdf/tcpdf.php',
+    // OJS 3.3 location
+    Core::getBaseDir() . '/lib/pkp/lib/tcpdf/tcpdf.php',
+);
+
+$tcpdfLoaded = false;
+foreach ($tcpdfLocations as $tcpdfPath) {
+    if (file_exists($tcpdfPath)) {
+        require_once($tcpdfPath);
+        $tcpdfLoaded = true;
+        break;
+    }
+}
+
+if (!$tcpdfLoaded) {
+    $installPath = dirname(__FILE__, 2);
+    throw new Exception(
+        "TCPDF library not found. Please install TCPDF:\n\n" .
+        "cd {$installPath}/lib/\n" .
+        "wget https://github.com/tecnickcom/TCPDF/archive/refs/tags/6.6.5.tar.gz\n" .
+        "tar -xzf 6.6.5.tar.gz\n" .
+        "mv TCPDF-6.6.5 tcpdf\n\n" .
+        "See {$installPath}/lib/tcpdf/README.md for details."
+    );
+}
 
 class CertificateGenerator {
 
