@@ -148,8 +148,8 @@ class CertificateHandler extends Handler {
 
             if ($certificate) {
                 // Get reviewer and context information
-                $userDao = DAORegistry::getDAO('UserDAO');
-                $reviewer = $userDao->getById($certificate->getReviewerId());
+                // Use Repo facade for OJS 3.4 compatibility
+                $reviewer = Repo::user()->get($certificate->getReviewerId());
 
                 $contextDao = Application::getContextDAO();
                 $context = $contextDao->getById($certificate->getContextId());

@@ -75,8 +75,8 @@ class CertificateGenerator {
         $this->reviewAssignment = $reviewAssignment;
 
         // Load related objects
-        $userDao = DAORegistry::getDAO('UserDAO');
-        $this->reviewer = $userDao->getById($reviewAssignment->getReviewerId());
+        // Use Repo facade for OJS 3.4 compatibility
+        $this->reviewer = Repo::user()->get($reviewAssignment->getReviewerId());
 
         $submissionDao = DAORegistry::getDAO('SubmissionDAO');
         $this->submission = $submissionDao->getById($reviewAssignment->getSubmissionId());
@@ -167,13 +167,25 @@ class CertificateGenerator {
     private function applyBackground($pdf) {
         $backgroundImage = $this->getTemplateSetting('backgroundImage');
 
-        if ($backgroundImage && file_exists($backgroundImage)) {
-            // Get page dimensions
-            $pageWidth = $pdf->getPageWidth();
-            $pageHeight = $pdf->getPageHeight();
+        if ($backgroundImage) {
+            error_log("ReviewerCertificate: Background image path: " . $backgroundImage);
+            error_log("ReviewerCertificate: File exists: " . (file_exists($backgroundImage) ? 'yes' : 'no'));
 
-            // Add background image
-            $pdf->Image($backgroundImage, 0, 0, $pageWidth, $pageHeight, '', '', '', false, 300, '', false, false, 0);
+            if (file_exists($backgroundImage)) {
+                // Get page dimensions
+                $pageWidth = $pdf->getPageWidth();
+                $pageHeight = $pdf->getPageHeight();
+
+                // Add background image
+                try {
+                    $pdf->Image($backgroundImage, 0, 0, $pageWidth, $pageHeight, '', '', '', false, 300, '', false, false, 0);
+                    error_log("ReviewerCertificate: Background image added successfully");
+                } catch (Exception $e) {
+                    error_log("ReviewerCertificate: Error adding background image: " . $e->getMessage());
+                }
+            }
+        } else {
+            error_log("ReviewerCertificate: No background image configured");
         }
     }
 

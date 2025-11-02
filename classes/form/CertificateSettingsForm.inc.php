@@ -177,7 +177,59 @@ class CertificateSettingsForm extends Form {
             $templateMgr->assign('backgroundImageName', basename($backgroundImage));
         }
 
+        // Statistics
+        $certificateDao = DAORegistry::getDAO('CertificateDAO');
+        $statistics = $certificateDao->getStatisticsByContext($this->contextId);
+        $templateMgr->assign('totalCertificates', $statistics['total']);
+        $templateMgr->assign('totalDownloads', $statistics['downloads']);
+        $templateMgr->assign('uniqueReviewers', $statistics['reviewers']);
+
+        // Eligible reviewers for batch generation
+        $eligibleReviewers = $this->getEligibleReviewers();
+        $templateMgr->assign('eligibleReviewers', $eligibleReviewers);
+
         return parent::fetch($request, $template, $display);
+    }
+
+    /**
+     * Get eligible reviewers for batch certificate generation
+     * @return array
+     */
+    private function getEligibleReviewers() {
+        $certificateDao = DAORegistry::getDAO('CertificateDAO');
+
+        // Use direct database query for OJS 3.4 compatibility
+        // Note: review_id is the primary key in review_assignments table
+        $result = $certificateDao->retrieve(
+            'SELECT DISTINCT ra.reviewer_id,
+                    COUNT(*) as completed_reviews,
+                    SUM(CASE WHEN rc.certificate_id IS NULL THEN 1 ELSE 0 END) as missing_certificates
+             FROM review_assignments ra
+             LEFT JOIN submissions s ON ra.submission_id = s.submission_id
+             LEFT JOIN reviewer_certificates rc ON ra.review_id = rc.review_id
+             WHERE s.context_id = ?
+                   AND ra.date_completed IS NOT NULL
+             GROUP BY ra.reviewer_id
+             HAVING missing_certificates > 0
+             ORDER BY completed_reviews DESC',
+            array((int) $this->contextId)
+        );
+
+        $reviewers = array();
+        foreach ($result as $row) {
+            // Use Repo facade for OJS 3.4 compatibility
+            $user = Repo::user()->get($row->reviewer_id);
+            if ($user) {
+                $reviewers[] = array(
+                    'id' => $row->reviewer_id,
+                    'name' => $user->getFullName(),
+                    'completedReviews' => $row->completed_reviews,
+                    'missingCertificates' => $row->missing_certificates
+                );
+            }
+        }
+
+        return $reviewers;
     }
 
     /**

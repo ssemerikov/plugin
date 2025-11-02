@@ -133,9 +133,64 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                 echo $pdfContent;
                 exit;
 
+            case 'generateBatch':
+                $context = $request->getContext();
+                $reviewerIds = $request->getUserVar('reviewerIds');
+
+                if (!is_array($reviewerIds) || empty($reviewerIds)) {
+                    return new JSONMessage(false, __('plugins.generic.reviewerCertificate.batch.noSelection'));
+                }
+
+                $certificateDao = DAORegistry::getDAO('CertificateDAO');
+                $this->import('classes.Certificate');
+
+                $generated = 0;
+                foreach ($reviewerIds as $reviewerId) {
+                    // Use direct SQL query for OJS 3.4 compatibility
+                    // Note: review_id is the primary key in review_assignments table
+                    $result = $certificateDao->retrieve(
+                        'SELECT ra.review_id, ra.reviewer_id, ra.submission_id
+                         FROM review_assignments ra
+                         LEFT JOIN submissions s ON ra.submission_id = s.submission_id
+                         LEFT JOIN reviewer_certificates rc ON ra.review_id = rc.review_id
+                         WHERE ra.reviewer_id = ?
+                               AND s.context_id = ?
+                               AND ra.date_completed IS NOT NULL
+                               AND rc.certificate_id IS NULL',
+                        array((int) $reviewerId, (int) $context->getId())
+                    );
+
+                    foreach ($result as $row) {
+                        // Create certificate
+                        $certificate = new Certificate();
+                        $certificate->setReviewerId($row->reviewer_id);
+                        $certificate->setSubmissionId($row->submission_id);
+                        $certificate->setReviewId($row->review_id);
+                        $certificate->setContextId($context->getId());
+                        $certificate->setDateIssued(Core::getCurrentDate());
+                        // Generate code without review assignment object
+                        $certificate->setCertificateCode(strtoupper(substr(md5($row->review_id . time() . uniqid()), 0, 12)));
+                        $certificate->setDownloadCount(0);
+
+                        $certificateDao->insertObject($certificate);
+                        $generated++;
+                    }
+                }
+
+                return new JSONMessage(true, array('generated' => $generated));
+
             default:
                 return parent::manage($args, $request);
         }
+    }
+
+    /**
+     * Generate certificate code
+     * @param $reviewAssignment ReviewAssignment
+     * @return string
+     */
+    private function generateCertificateCode($reviewAssignment) {
+        return strtoupper(substr(md5($reviewAssignment->getId() . time() . uniqid()), 0, 12));
     }
 
     /**
@@ -182,6 +237,10 @@ class ReviewerCertificatePlugin extends GenericPlugin {
             $this->addScript($request);
             $templateMgr->assign('showCertificateButton', true);
             $templateMgr->assign('certificateUrl', $request->url(null, 'certificate', 'download', $reviewAssignment->getId()));
+
+            // Include the certificate button template
+            $output =& $params[2];
+            $output .= $templateMgr->fetch($this->getTemplateResource('reviewerDashboard.tpl'));
         }
 
         return false;
@@ -247,21 +306,14 @@ class ReviewerCertificatePlugin extends GenericPlugin {
     }
 
     /**
-     * Generate unique certificate code
-     */
-    private function generateCertificateCode($reviewAssignment) {
-        return strtoupper(substr(md5($reviewAssignment->getId() . time()), 0, 12));
-    }
-
-    /**
      * Send certificate notification email
      */
     private function sendCertificateNotification($reviewAssignment) {
         $request = Application::get()->getRequest();
         $context = $request->getContext();
 
-        $userDao = DAORegistry::getDAO('UserDAO');
-        $reviewer = $userDao->getById($reviewAssignment->getReviewerId());
+        // Use Repo facade for OJS 3.4 compatibility
+        $reviewer = Repo::user()->get($reviewAssignment->getReviewerId());
 
         import('lib.pkp.classes.mail.MailTemplate');
         $mail = new MailTemplate('REVIEWER_CERTIFICATE_AVAILABLE');
