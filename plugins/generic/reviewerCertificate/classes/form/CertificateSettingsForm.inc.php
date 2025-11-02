@@ -12,6 +12,10 @@
  */
 
 import('lib.pkp.classes.form.Form');
+import('lib.pkp.classes.form.validation.FormValidator');
+import('lib.pkp.classes.form.validation.FormValidatorPost');
+import('lib.pkp.classes.form.validation.FormValidatorCSRF');
+import('lib.pkp.classes.form.validation.FormValidatorCustom');
 
 class CertificateSettingsForm extends Form {
 
