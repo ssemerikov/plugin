@@ -14,6 +14,8 @@
 import('lib.pkp.classes.plugins.GenericPlugin');
 import('lib.pkp.classes.core.JSONMessage');
 
+use APP\facades\Repo;
+
 class ReviewerCertificatePlugin extends GenericPlugin {
 
     /**

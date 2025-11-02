@@ -37,6 +37,8 @@ if (!$tcpdfLoaded) {
     );
 }
 
+use APP\facades\Repo;
+
 class CertificateGenerator {
 
     /** @var ReviewAssignment */
