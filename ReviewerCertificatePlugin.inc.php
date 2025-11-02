@@ -141,36 +141,38 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                     return new JSONMessage(false, __('plugins.generic.reviewerCertificate.batch.noSelection'));
                 }
 
-                $reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
                 $certificateDao = DAORegistry::getDAO('CertificateDAO');
                 $this->import('classes.Certificate');
 
                 $generated = 0;
                 foreach ($reviewerIds as $reviewerId) {
-                    // Get all completed reviews for this reviewer
-                    $reviewAssignments = $reviewAssignmentDao->getByUserId($reviewerId);
+                    // Use direct SQL query for OJS 3.4 compatibility
+                    $result = $certificateDao->retrieve(
+                        'SELECT ra.review_assignment_id, ra.reviewer_id, ra.submission_id
+                         FROM review_assignments ra
+                         LEFT JOIN submissions s ON ra.submission_id = s.submission_id
+                         LEFT JOIN reviewer_certificates rc ON ra.review_assignment_id = rc.review_id
+                         WHERE ra.reviewer_id = ?
+                               AND s.context_id = ?
+                               AND ra.date_completed IS NOT NULL
+                               AND rc.certificate_id IS NULL',
+                        array((int) $reviewerId, (int) $context->getId())
+                    );
 
-                    while ($reviewAssignment = $reviewAssignments->next()) {
-                        if ($reviewAssignment->getDateCompleted() &&
-                            $reviewAssignment->getSubmission()->getContextId() == $context->getId()) {
+                    foreach ($result as $row) {
+                        // Create certificate
+                        $certificate = new Certificate();
+                        $certificate->setReviewerId($row->reviewer_id);
+                        $certificate->setSubmissionId($row->submission_id);
+                        $certificate->setReviewId($row->review_assignment_id);
+                        $certificate->setContextId($context->getId());
+                        $certificate->setDateIssued(Core::getCurrentDate());
+                        // Generate code without review assignment object
+                        $certificate->setCertificateCode(strtoupper(substr(md5($row->review_assignment_id . time() . uniqid()), 0, 12)));
+                        $certificate->setDownloadCount(0);
 
-                            // Check if certificate already exists
-                            $existing = $certificateDao->getByReviewId($reviewAssignment->getId());
-                            if (!$existing) {
-                                // Create certificate
-                                $certificate = new Certificate();
-                                $certificate->setReviewerId($reviewerId);
-                                $certificate->setSubmissionId($reviewAssignment->getSubmissionId());
-                                $certificate->setReviewId($reviewAssignment->getId());
-                                $certificate->setContextId($context->getId());
-                                $certificate->setDateIssued(Core::getCurrentDate());
-                                $certificate->setCertificateCode($this->generateCertificateCode($reviewAssignment));
-                                $certificate->setDownloadCount(0);
-
-                                $certificateDao->insertObject($certificate);
-                                $generated++;
-                            }
-                        }
+                        $certificateDao->insertObject($certificate);
+                        $generated++;
                     }
                 }
 

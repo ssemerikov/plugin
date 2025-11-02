@@ -196,52 +196,39 @@ class CertificateSettingsForm extends Form {
      * @return array
      */
     private function getEligibleReviewers() {
-        $reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
         $certificateDao = DAORegistry::getDAO('CertificateDAO');
 
-        // Get all completed review assignments for this context
-        $result = $reviewAssignmentDao->getByContextId($this->contextId);
+        // Use direct database query for OJS 3.4 compatibility
+        $result = $certificateDao->retrieve(
+            'SELECT DISTINCT ra.reviewer_id,
+                    COUNT(*) as completed_reviews,
+                    SUM(CASE WHEN rc.certificate_id IS NULL THEN 1 ELSE 0 END) as missing_certificates
+             FROM review_assignments ra
+             LEFT JOIN submissions s ON ra.submission_id = s.submission_id
+             LEFT JOIN reviewer_certificates rc ON ra.review_assignment_id = rc.review_id
+             WHERE s.context_id = ?
+                   AND ra.date_completed IS NOT NULL
+             GROUP BY ra.reviewer_id
+             HAVING missing_certificates > 0
+             ORDER BY completed_reviews DESC',
+            array((int) $this->contextId)
+        );
 
         $reviewers = array();
-        $reviewerCounts = array();
-
-        while ($reviewAssignment = $result->next()) {
-            if ($reviewAssignment->getDateCompleted()) {
-                $reviewerId = $reviewAssignment->getReviewerId();
-
-                // Count reviews per reviewer
-                if (!isset($reviewerCounts[$reviewerId])) {
-                    $reviewerCounts[$reviewerId] = 0;
-                }
-                $reviewerCounts[$reviewerId]++;
-
-                // Check if certificate already exists for this review
-                $certificate = $certificateDao->getByReviewId($reviewAssignment->getId());
-                if (!$certificate) {
-                    // This review doesn't have a certificate yet
-                    if (!isset($reviewers[$reviewerId])) {
-                        // Use Repo facade for OJS 3.4 compatibility
-                        $user = Repo::user()->get($reviewerId);
-                        if ($user) {
-                            $reviewers[$reviewerId] = array(
-                                'id' => $reviewerId,
-                                'name' => $user->getFullName(),
-                                'completedReviews' => 0,
-                                'missingCertificates' => 0
-                            );
-                        }
-                    }
-                    $reviewers[$reviewerId]['missingCertificates']++;
-                }
+        foreach ($result as $row) {
+            // Use Repo facade for OJS 3.4 compatibility
+            $user = Repo::user()->get($row->reviewer_id);
+            if ($user) {
+                $reviewers[] = array(
+                    'id' => $row->reviewer_id,
+                    'name' => $user->getFullName(),
+                    'completedReviews' => $row->completed_reviews,
+                    'missingCertificates' => $row->missing_certificates
+                );
             }
         }
 
-        // Update completed reviews count
-        foreach ($reviewers as $reviewerId => $data) {
-            $reviewers[$reviewerId]['completedReviews'] = $reviewerCounts[$reviewerId];
-        }
-
-        return array_values($reviewers);
+        return $reviewers;
     }
 
     /**
