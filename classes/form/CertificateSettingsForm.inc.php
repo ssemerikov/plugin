@@ -197,7 +197,6 @@ class CertificateSettingsForm extends Form {
      */
     private function getEligibleReviewers() {
         $reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
-        $userDao = DAORegistry::getDAO('UserDAO');
         $certificateDao = DAORegistry::getDAO('CertificateDAO');
 
         // Get all completed review assignments for this context
@@ -221,7 +220,8 @@ class CertificateSettingsForm extends Form {
                 if (!$certificate) {
                     // This review doesn't have a certificate yet
                     if (!isset($reviewers[$reviewerId])) {
-                        $user = $userDao->getById($reviewerId);
+                        // Use Repo facade for OJS 3.4 compatibility
+                        $user = Repo::user()->get($reviewerId);
                         if ($user) {
                             $reviewers[$reviewerId] = array(
                                 'id' => $reviewerId,

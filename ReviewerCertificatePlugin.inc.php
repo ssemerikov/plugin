@@ -309,8 +309,8 @@ class ReviewerCertificatePlugin extends GenericPlugin {
         $request = Application::get()->getRequest();
         $context = $request->getContext();
 
-        $userDao = DAORegistry::getDAO('UserDAO');
-        $reviewer = $userDao->getById($reviewAssignment->getReviewerId());
+        // Use Repo facade for OJS 3.4 compatibility
+        $reviewer = Repo::user()->get($reviewAssignment->getReviewerId());
 
         import('lib.pkp.classes.mail.MailTemplate');
         $mail = new MailTemplate('REVIEWER_CERTIFICATE_AVAILABLE');
