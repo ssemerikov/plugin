@@ -251,7 +251,7 @@ class CertificateDAO extends DAO {
      * Get the insert ID for the last inserted certificate
      * @return int
      */
-    public function getInsertId() {
+    public function getInsertId(): int {
         return $this->_getInsertId('reviewer_certificates', 'certificate_id');
     }
 }
