@@ -157,11 +157,11 @@ class CertificateSettingsForm extends Form {
 
         // Default templates
         $defaultBodyTemplate = "This certificate is awarded to\n\n" .
-                              "{{$reviewerName}}\n\n" .
+                              "{{\$reviewerName}}\n\n" .
                               "In recognition of their valuable contribution as a peer reviewer for\n\n" .
-                              "{{$journalName}}\n\n" .
-                              "Review completed on {{$reviewDate}}\n\n" .
-                              "Manuscript: {{$submissionTitle}}";
+                              "{{\$journalName}}\n\n" .
+                              "Review completed on {{\$reviewDate}}\n\n" .
+                              "Manuscript: {{\$submissionTitle}}";
 
         $templateMgr->assign('defaultBodyTemplate', $defaultBodyTemplate);
 
