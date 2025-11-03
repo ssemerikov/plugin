@@ -264,19 +264,16 @@ class CertificateGenerator {
         // Get request object
         $request = Application::get()->getRequest();
 
-        // Determine verification URL
+        // Determine verification URL using OJS's URL routing
         if ($this->previewMode) {
-            // Build URL manually for preview mode to avoid router context issues
-            $baseUrl = $request->getBaseUrl();
-            $contextPath = $this->context ? $this->context->getPath() : 'index';
-            $verificationUrl = $baseUrl . '/index.php/' . $contextPath . '/certificate/verify/PREVIEW12345';
+            // Use request's url() method for proper URL building
+            $verificationUrl = $request->url(null, 'certificate', 'verify', 'PREVIEW12345');
         } else {
             if (!$this->certificate) {
                 return;
             }
-            $baseUrl = $request->getBaseUrl();
-            $contextPath = $this->context ? $this->context->getPath() : 'index';
-            $verificationUrl = $baseUrl . '/index.php/' . $contextPath . '/certificate/verify/' . $this->certificate->getCertificateCode();
+            // Use request's url() method for proper URL building
+            $verificationUrl = $request->url(null, 'certificate', 'verify', $this->certificate->getCertificateCode());
         }
 
         // Position QR code in bottom right corner
