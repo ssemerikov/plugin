@@ -43,14 +43,15 @@ class CertificateHandler extends Handler {
      * @copydoc PKPHandler::authorize()
      */
     public function authorize($request, &$args, $roleAssignments) {
-        // Get the requested operation
         $op = $request->getRequestedOp();
 
-        // Make verify operation publicly accessible - no authorization required
-        if ($op == 'verify') {
+        // Allow public access to verify operation (no authentication required)
+        if ($op === 'verify') {
+            // Skip all authorization for verify - it's a public endpoint
             return true;
         }
 
+        // For all other operations, require context access
         import('lib.pkp.classes.security.authorization.ContextAccessPolicy');
         $this->addPolicy(new ContextAccessPolicy($request, $roleAssignments));
 
@@ -178,9 +179,10 @@ class CertificateHandler extends Handler {
         }
 
         // Display verification page
-        // Use direct template path since plugin reference may not be set at this point
-        $templatePath = 'plugins/generic/reviewerCertificate/templates/verify.tpl';
-        return $templateMgr->display($templatePath);
+        // Use plugin-specific template path format for OJS
+        // The template file is in plugins/generic/reviewerCertificate/templates/verify.tpl
+        $pluginPath = Core::getBaseDir() . '/plugins/generic/reviewerCertificate/templates/verify.tpl';
+        return $templateMgr->display($pluginPath);
     }
 
     /**
