@@ -184,8 +184,11 @@ class ReviewerCertificatePlugin extends GenericPlugin {
 
                 try {
                     foreach ($reviewerIds as $reviewerId) {
+                        error_log("ReviewerCertificate: Processing reviewer ID: $reviewerId");
+
                         // Use direct SQL query for OJS 3.4 compatibility
                         // Note: review_id is the primary key in review_assignments table
+                        error_log("ReviewerCertificate: Executing SQL query for reviewer $reviewerId");
                         $result = $certificateDao->retrieve(
                             'SELECT ra.review_id, ra.reviewer_id, ra.submission_id
                              FROM review_assignments ra
@@ -198,8 +201,14 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                             array((int) $reviewerId, (int) $context->getId())
                         );
 
+                        error_log('ReviewerCertificate: SQL query executed, result type: ' . gettype($result));
+
                         if ($result) {
+                            $rowCount = 0;
                             foreach ($result as $row) {
+                                $rowCount++;
+                                error_log("ReviewerCertificate: Creating certificate for review_id: {$row->review_id}");
+
                                 // Create certificate
                                 $certificate = new Certificate();
                                 $certificate->setReviewerId($row->reviewer_id);
@@ -211,11 +220,18 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                 $certificate->setCertificateCode(strtoupper(substr(md5($row->review_id . time() . uniqid()), 0, 12)));
                                 $certificate->setDownloadCount(0);
 
+                                error_log("ReviewerCertificate: Inserting certificate into database");
                                 $certificateDao->insertObject($certificate);
                                 $generated++;
+                                error_log("ReviewerCertificate: Certificate created successfully, total generated: $generated");
                             }
+                            error_log("ReviewerCertificate: Processed $rowCount reviews for reviewer $reviewerId");
+                        } else {
+                            error_log("ReviewerCertificate: No completed reviews found for reviewer $reviewerId");
                         }
                     }
+
+                    error_log("ReviewerCertificate: Batch generation completed - generated $generated certificates");
 
                     // Return response in format expected by JavaScript
                     $response = new JSONMessage(true);
@@ -224,6 +240,7 @@ class ReviewerCertificatePlugin extends GenericPlugin {
 
                 } catch (Exception $e) {
                     error_log('ReviewerCertificate batch generation error: ' . $e->getMessage());
+                    error_log('ReviewerCertificate batch generation stack trace: ' . $e->getTraceAsString());
                     return new JSONMessage(false, 'Error generating certificates: ' . $e->getMessage());
                 }
 
