@@ -448,24 +448,26 @@ class ReviewerCertificatePlugin extends GenericPlugin {
             $templateMgr->assign('certificateUrl', $request->url(null, 'certificate', 'download', $reviewAssignment->getId()));
 
             // Include the certificate button template
-            $output =& $params[2];
-            error_log('ReviewerCertificate: Output param type: ' . gettype($output) . ', length before: ' . (is_string($output) ? strlen($output) : 'N/A'));
+            error_log('ReviewerCertificate: params[2] type: ' . gettype($params[2]) . ', is_null: ' . ($params[2] === null ? 'yes' : 'no'));
 
-            // Initialize output as empty string if it's NULL
-            if ($output === null) {
-                error_log('ReviewerCertificate: Output is NULL, initializing as empty string');
-                $output = '';
+            // Initialize output if it's NULL - must modify params array directly
+            if ($params[2] === null) {
+                error_log('ReviewerCertificate: Output is NULL, initializing params[2] directly');
+                $params[2] = '';
             }
+
+            $output =& $params[2];
+            error_log('ReviewerCertificate: Output length before: ' . (is_string($output) ? strlen($output) : 'N/A'));
 
             $additionalContent = $templateMgr->fetch($this->getTemplateResource('reviewerDashboard.tpl'));
             error_log('ReviewerCertificate: Additional content length: ' . strlen($additionalContent));
-            error_log('ReviewerCertificate: Additional content preview: ' . substr($additionalContent, 0, 200));
+            error_log('ReviewerCertificate: Additional content preview: ' . substr($additionalContent, 0, 100));
 
             // Wrap in a div for easier styling and debugging
             $output .= '<div class="reviewer-certificate-wrapper">' . $additionalContent . '</div>';
 
-            error_log('ReviewerCertificate: Output length after: ' . (is_string($output) ? strlen($output) : 'N/A'));
-            error_log('ReviewerCertificate: Output value type after assignment: ' . gettype($output));
+            error_log('ReviewerCertificate: Output length after: ' . strlen($output));
+            error_log('ReviewerCertificate: params[2] final length: ' . strlen($params[2]));
             error_log('ReviewerCertificate: Certificate button added successfully');
         } else {
             error_log('ReviewerCertificate: Button not added - certificate does not exist and reviewer not eligible');
