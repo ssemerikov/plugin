@@ -221,16 +221,16 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                 $certificate->setCertificateCode(strtoupper(substr(md5($row->review_id . time() . uniqid()), 0, 12)));
                                 $certificate->setDownloadCount(0);
 
-                                error_log("ReviewerCertificate: Inserting certificate into database");
+                                error_log("ReviewerCertificate: *** CODE_VERSION_2024110323 *** Inserting certificate into database");
                                 try {
                                     $insertResult = $certificateDao->insertObject($certificate);
-                                    error_log("ReviewerCertificate: insertObject() returned: " . var_export($insertResult, true));
+                                    error_log("ReviewerCertificate: *** NEW_CODE *** insertObject() returned: " . var_export($insertResult, true));
                                     $generated++;
-                                    error_log("ReviewerCertificate: Certificate created successfully, total generated: $generated");
+                                    error_log("ReviewerCertificate: *** NEW_CODE *** Certificate created successfully, total generated: $generated");
                                 } catch (Throwable $insertError) {
-                                    error_log("ReviewerCertificate: insertObject() error: " . $insertError->getMessage());
-                                    error_log("ReviewerCertificate: insertObject() error type: " . get_class($insertError));
-                                    error_log("ReviewerCertificate: insertObject() stack trace: " . $insertError->getTraceAsString());
+                                    error_log("ReviewerCertificate: *** NEW_CODE *** insertObject() error: " . $insertError->getMessage());
+                                    error_log("ReviewerCertificate: *** NEW_CODE *** insertObject() error type: " . get_class($insertError));
+                                    error_log("ReviewerCertificate: *** NEW_CODE *** insertObject() stack trace: " . $insertError->getTraceAsString());
                                     // Continue with next certificate even if this one fails
                                 }
                             }
@@ -447,28 +447,43 @@ class ReviewerCertificatePlugin extends GenericPlugin {
             $templateMgr->assign('certificateExists', (bool)$certificate);
             $templateMgr->assign('certificateUrl', $request->url(null, 'certificate', 'download', $reviewAssignment->getId()));
 
-            // Include the certificate button template
-            error_log('ReviewerCertificate: params[2] type: ' . gettype($params[2]) . ', is_null: ' . ($params[2] === null ? 'yes' : 'no'));
+            // Fetch the button HTML
+            $additionalContent = $templateMgr->fetch($this->getTemplateResource('reviewerDashboard.tpl'));
+            error_log('ReviewerCertificate: Button HTML generated, length: ' . strlen($additionalContent));
 
-            // Initialize output if it's NULL - must modify params array directly
-            if ($params[2] === null) {
-                error_log('ReviewerCertificate: Output is NULL, initializing params[2] directly');
-                $params[2] = '';
+            // Instead of trying to modify params[2] (which is NULL),
+            // we need to use template manager's state to inject content
+            // Store the content in template manager for later retrieval
+            $templateMgr->assign('reviewerCertificateButtonHTML', $additionalContent);
+
+            // Try to append to output if it exists
+            if (isset($params[2]) && is_string($params[2])) {
+                $params[2] .= '<div class="reviewer-certificate-wrapper">' . $additionalContent . '</div>';
+                error_log('ReviewerCertificate: Appended to existing output buffer');
+            } else {
+                // Output is NULL or not a string - use alternative injection method
+                error_log('ReviewerCertificate: Output buffer not available (type: ' . gettype($params[2]) . '), using template state');
+
+                // Register a state variable that the template can use
+                // This is a workaround for templates that don't have an output buffer yet
+                $templateMgr->register_outputfilter(function($output, $template) use ($additionalContent) {
+                    // Inject before the closing body tag if it exists
+                    if (stripos($output, '</body>') !== false) {
+                        $output = str_ireplace('</body>',
+                            '<div class="reviewer-certificate-wrapper">' . $additionalContent . '</div></body>',
+                            $output);
+                        error_log('ReviewerCertificate: Injected via output filter before </body>');
+                    } else {
+                        // No body tag, append at end
+                        $output .= '<div class="reviewer-certificate-wrapper">' . $additionalContent . '</div>';
+                        error_log('ReviewerCertificate: Injected via output filter at end');
+                    }
+                    return $output;
+                });
+                error_log('ReviewerCertificate: Registered output filter for button injection');
             }
 
-            $output =& $params[2];
-            error_log('ReviewerCertificate: Output length before: ' . (is_string($output) ? strlen($output) : 'N/A'));
-
-            $additionalContent = $templateMgr->fetch($this->getTemplateResource('reviewerDashboard.tpl'));
-            error_log('ReviewerCertificate: Additional content length: ' . strlen($additionalContent));
-            error_log('ReviewerCertificate: Additional content preview: ' . substr($additionalContent, 0, 100));
-
-            // Wrap in a div for easier styling and debugging
-            $output .= '<div class="reviewer-certificate-wrapper">' . $additionalContent . '</div>';
-
-            error_log('ReviewerCertificate: Output length after: ' . strlen($output));
-            error_log('ReviewerCertificate: params[2] final length: ' . strlen($params[2]));
-            error_log('ReviewerCertificate: Certificate button added successfully');
+            error_log('ReviewerCertificate: Certificate button injection complete');
         } else {
             error_log('ReviewerCertificate: Button not added - certificate does not exist and reviewer not eligible');
         }
