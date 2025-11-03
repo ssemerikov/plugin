@@ -261,8 +261,6 @@ class CertificateGenerator {
      * @param $pdf TCPDF
      */
     private function addQRCode($pdf) {
-        $request = Application::get()->getRequest();
-
         // Determine verification URL
         if ($this->previewMode) {
             // Build URL manually for preview mode to avoid router context issues
