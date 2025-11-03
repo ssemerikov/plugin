@@ -363,6 +363,8 @@ class ReviewerCertificatePlugin extends GenericPlugin {
         $mail->assignParams(array(
             'reviewerName' => $reviewer->getFullName(),
             'certificateUrl' => $request->url(null, 'certificate', 'download', $reviewAssignment->getId()),
+            'journalName' => $context->getLocalizedName(),
+            'journalUrl' => $request->url($context->getPath()),
         ));
 
         $mail->send($request);
