@@ -222,9 +222,17 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                 $certificate->setDownloadCount(0);
 
                                 error_log("ReviewerCertificate: Inserting certificate into database");
-                                $certificateDao->insertObject($certificate);
-                                $generated++;
-                                error_log("ReviewerCertificate: Certificate created successfully, total generated: $generated");
+                                try {
+                                    $insertResult = $certificateDao->insertObject($certificate);
+                                    error_log("ReviewerCertificate: insertObject() returned: " . var_export($insertResult, true));
+                                    $generated++;
+                                    error_log("ReviewerCertificate: Certificate created successfully, total generated: $generated");
+                                } catch (Throwable $insertError) {
+                                    error_log("ReviewerCertificate: insertObject() error: " . $insertError->getMessage());
+                                    error_log("ReviewerCertificate: insertObject() error type: " . get_class($insertError));
+                                    error_log("ReviewerCertificate: insertObject() stack trace: " . $insertError->getTraceAsString());
+                                    // Continue with next certificate even if this one fails
+                                }
                             }
                             error_log("ReviewerCertificate: Processed $rowCount reviews for reviewer $reviewerId");
                         } else {
@@ -305,6 +313,12 @@ class ReviewerCertificatePlugin extends GenericPlugin {
         $template = $params[1];
 
         error_log('ReviewerCertificate: addCertificateButton called for template: ' . $template);
+
+        // Exclude our own verify template to prevent interference with Smarty path resolution
+        if (strpos($template, 'verify.tpl') !== false) {
+            error_log('ReviewerCertificate: Skipping verify.tpl to prevent template path interference');
+            return false;
+        }
 
         // Check if this is the reviewer dashboard - support multiple template patterns for OJS 3.4
         $reviewerTemplates = array(

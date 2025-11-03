@@ -179,9 +179,17 @@ class CertificateHandler extends Handler {
         }
 
         // Display verification page
-        // Use relative path from OJS installation root
-        // Smarty will find the template in plugins/generic/reviewerCertificate/templates/verify.tpl
-        return $templateMgr->display('plugins/generic/reviewerCertificate/templates/verify.tpl');
+        // Use the plugin's template resource to avoid Smarty path resolution issues
+        if ($this->plugin) {
+            $templateResource = $this->plugin->getTemplateResource('verify.tpl');
+            error_log('ReviewerCertificate: Using template resource: ' . $templateResource);
+            return $templateMgr->display($templateResource);
+        } else {
+            // Fallback: use direct template name
+            // Smarty will search in plugin template directories
+            error_log('ReviewerCertificate: Plugin not set, using fallback template path');
+            return $templateMgr->display('reviewerCertificate:verify.tpl');
+        }
     }
 
     /**
