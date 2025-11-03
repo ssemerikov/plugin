@@ -451,6 +451,12 @@ class ReviewerCertificatePlugin extends GenericPlugin {
             $output =& $params[2];
             error_log('ReviewerCertificate: Output param type: ' . gettype($output) . ', length before: ' . (is_string($output) ? strlen($output) : 'N/A'));
 
+            // Initialize output as empty string if it's NULL
+            if ($output === null) {
+                error_log('ReviewerCertificate: Output is NULL, initializing as empty string');
+                $output = '';
+            }
+
             $additionalContent = $templateMgr->fetch($this->getTemplateResource('reviewerDashboard.tpl'));
             error_log('ReviewerCertificate: Additional content length: ' . strlen($additionalContent));
             error_log('ReviewerCertificate: Additional content preview: ' . substr($additionalContent, 0, 200));
@@ -459,6 +465,7 @@ class ReviewerCertificatePlugin extends GenericPlugin {
             $output .= '<div class="reviewer-certificate-wrapper">' . $additionalContent . '</div>';
 
             error_log('ReviewerCertificate: Output length after: ' . (is_string($output) ? strlen($output) : 'N/A'));
+            error_log('ReviewerCertificate: Output value type after assignment: ' . gettype($output));
             error_log('ReviewerCertificate: Certificate button added successfully');
         } else {
             error_log('ReviewerCertificate: Button not added - certificate does not exist and reviewer not eligible');
