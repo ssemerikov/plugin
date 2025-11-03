@@ -265,13 +265,17 @@ class CertificateGenerator {
 
         // Determine verification URL
         if ($this->previewMode) {
-            // Use sample URL for preview
-            $verificationUrl = $request->url(null, 'certificate', 'verify', 'PREVIEW12345');
+            // Build URL manually for preview mode to avoid router context issues
+            $baseUrl = $request->getBaseUrl();
+            $contextPath = $this->context ? $this->context->getPath() : 'index';
+            $verificationUrl = $baseUrl . '/index.php/' . $contextPath . '/certificate/verify/PREVIEW12345';
         } else {
             if (!$this->certificate) {
                 return;
             }
-            $verificationUrl = $request->url(null, 'certificate', 'verify', $this->certificate->getCertificateCode());
+            $baseUrl = $request->getBaseUrl();
+            $contextPath = $this->context ? $this->context->getPath() : 'index';
+            $verificationUrl = $baseUrl . '/index.php/' . $contextPath . '/certificate/verify/' . $this->certificate->getCertificateCode();
         }
 
         // Position QR code in bottom right corner
@@ -391,11 +395,11 @@ class CertificateGenerator {
      * @return string
      */
     private function getDefaultBodyTemplate() {
-        return "This certificate is awarded to\n\n" .
-               "{{$reviewerName}}\n\n" .
-               "In recognition of their valuable contribution as a peer reviewer for\n\n" .
-               "{{$journalName}}\n\n" .
-               "Review completed on {{$reviewDate}}\n\n" .
-               "Manuscript: {{$submissionTitle}}";
+        return 'This certificate is awarded to' . "\n\n" .
+               '{{$reviewerName}}' . "\n\n" .
+               'In recognition of their valuable contribution as a peer reviewer for' . "\n\n" .
+               '{{$journalName}}' . "\n\n" .
+               'Review completed on {{$reviewDate}}' . "\n\n" .
+               'Manuscript: {{$submissionTitle}}';
     }
 }

@@ -56,6 +56,27 @@ class ReviewerCertificatePlugin extends GenericPlugin {
     }
 
     /**
+     * @copydoc Plugin::getInstallEmailTemplatesFile()
+     */
+    public function getInstallEmailTemplatesFile() {
+        return ($this->getPluginPath() . DIRECTORY_SEPARATOR . 'emailTemplates.xml');
+    }
+
+    /**
+     * @copydoc Plugin::getCanEnable()
+     */
+    public function getCanEnable() {
+        return true;
+    }
+
+    /**
+     * @copydoc Plugin::getCanDisable()
+     */
+    public function getCanDisable() {
+        return true;
+    }
+
+    /**
      * @copydoc Plugin::getActions()
      */
     public function getActions($request, $verb) {
