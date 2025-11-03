@@ -179,10 +179,9 @@ class CertificateHandler extends Handler {
         }
 
         // Display verification page
-        // Use plugin-specific template path format for OJS
-        // The template file is in plugins/generic/reviewerCertificate/templates/verify.tpl
-        $pluginPath = Core::getBaseDir() . '/plugins/generic/reviewerCertificate/templates/verify.tpl';
-        return $templateMgr->display($pluginPath);
+        // Use relative path from OJS installation root
+        // Smarty will find the template in plugins/generic/reviewerCertificate/templates/verify.tpl
+        return $templateMgr->display('plugins/generic/reviewerCertificate/templates/verify.tpl');
     }
 
     /**

@@ -122,8 +122,9 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                         // Check if this was a file upload (regular POST instead of AJAX)
                         // If file was uploaded, redirect back to settings instead of returning JSON
                         if (isset($_FILES['backgroundImage']) && $_FILES['backgroundImage']['error'] == UPLOAD_ERR_OK) {
-                            // File was uploaded - redirect back to Website Settings > Plugins tab
-                            $request->redirect(null, 'management', 'settings', 'website', 'plugins');
+                            // File was uploaded - redirect back to Website Settings
+                            // Note: We can't control which tab opens - that's handled by JavaScript
+                            $request->redirect(null, 'management', 'settings', 'website');
                         }
 
                         return new JSONMessage(true);
@@ -238,9 +239,11 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                     $response->setContent(array('generated' => $generated));
                     return $response;
 
-                } catch (Exception $e) {
+                } catch (Throwable $e) {
+                    // Catch both Exception and Error objects (PHP 7+)
                     error_log('ReviewerCertificate batch generation error: ' . $e->getMessage());
                     error_log('ReviewerCertificate batch generation stack trace: ' . $e->getTraceAsString());
+                    error_log('ReviewerCertificate batch generation error type: ' . get_class($e));
                     return new JSONMessage(false, 'Error generating certificates: ' . $e->getMessage());
                 }
 
@@ -467,8 +470,18 @@ class ReviewerCertificatePlugin extends GenericPlugin {
         }
 
         // Count completed reviews for this reviewer
+        // In OJS 3.4, getCompletedReviewCountByReviewerId() doesn't exist
+        // Use custom SQL query instead
         $reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
-        $completedReviews = $reviewAssignmentDao->getCompletedReviewCountByReviewerId($reviewAssignment->getReviewerId());
+        $result = $reviewAssignmentDao->retrieve(
+            'SELECT COUNT(*) AS count FROM review_assignments WHERE reviewer_id = ? AND date_completed IS NOT NULL',
+            array((int) $reviewAssignment->getReviewerId())
+        );
+
+        $row = $result->current();
+        $completedReviews = $row ? (int) $row->count : 0;
+
+        error_log("ReviewerCertificate: Reviewer {$reviewAssignment->getReviewerId()} has {$completedReviews} completed reviews (minimum required: {$minimumReviews})");
 
         return $completedReviews >= $minimumReviews;
     }
