@@ -211,30 +211,37 @@ class ReviewerCertificatePlugin extends GenericPlugin {
 
                         error_log('ReviewerCertificate: SQL query executed, result type: ' . gettype($result));
 
-                        if ($result && $result->RecordCount() > 0) {
-                            error_log('ReviewerCertificate: Found ' . $result->RecordCount() . ' eligible reviews for reviewer ' . $reviewerId);
+                        if ($result) {
+                            $count = 0;
+                            // Handle both Generator (newer OJS) and ADOdb result objects
+                            foreach ($result as $row) {
+                                $count++;
+                                // Convert object to array if needed
+                                $rowData = is_object($row) ? (array)$row : $row;
 
-                            while (!$result->EOF) {
-                                $row = $result->GetRowAssoc(false);
-                                error_log('ReviewerCertificate: Creating certificate for review_id: ' . $row['review_id']);
+                                error_log('ReviewerCertificate: Creating certificate for review_id: ' . $rowData['review_id']);
 
                                 // Create certificate
                                 $certificate = new Certificate();
-                                $certificate->setReviewerId($row['reviewer_id']);
-                                $certificate->setSubmissionId($row['submission_id']);
-                                $certificate->setReviewId($row['review_id']);
+                                $certificate->setReviewerId($rowData['reviewer_id']);
+                                $certificate->setSubmissionId($rowData['submission_id']);
+                                $certificate->setReviewId($rowData['review_id']);
                                 $certificate->setContextId($context->getId());
                                 $certificate->setDateIssued(Core::getCurrentDate());
                                 // Generate code without review assignment object
-                                $certificate->setCertificateCode(strtoupper(substr(md5($row['review_id'] . time() . uniqid()), 0, 12)));
+                                $certificate->setCertificateCode(strtoupper(substr(md5($rowData['review_id'] . time() . uniqid()), 0, 12)));
                                 $certificate->setDownloadCount(0);
 
                                 error_log('ReviewerCertificate: Inserting certificate into database');
                                 $certificateDao->insertObject($certificate);
                                 $generated++;
                                 error_log('ReviewerCertificate: Certificate created successfully, total generated: ' . $generated);
+                            }
 
-                                $result->MoveNext();
+                            if ($count > 0) {
+                                error_log('ReviewerCertificate: Found ' . $count . ' eligible reviews for reviewer ' . $reviewerId);
+                            } else {
+                                error_log('ReviewerCertificate: No eligible reviews found for reviewer ' . $reviewerId);
                             }
                         } else {
                             error_log('ReviewerCertificate: No eligible reviews found for reviewer ' . $reviewerId);
