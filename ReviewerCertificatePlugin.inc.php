@@ -254,17 +254,16 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                 $certificate->setCertificateCode(strtoupper(substr(md5($row->review_id . time() . uniqid()), 0, 12)));
                                 $certificate->setDownloadCount(0);
 
-                                error_log("ReviewerCertificate: *** VERSION_20251104_1600 *** About to insert certificate for review_id=" . $row->review_id);
+                                error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** About to insert certificate for review_id=" . $row->review_id);
                                 error_log("ReviewerCertificate: Certificate data: reviewer_id=" . $row->reviewer_id . ", submission_id=" . $row->submission_id . ", code=" . $certificate->getCertificateCode());
 
                                 $startTime = microtime(true);
                                 try {
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1600 *** Using direct INSERT bypass (web context issue workaround)");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Using update() method for INSERT");
 
-                                    // WORKAROUND: Use direct database INSERT instead of DAO
-                                    // The DAO->insertObject() hangs in web context but works in CLI
-                                    // Direct INSERT works in both contexts
-                                    $result = $certificateDao->retrieve(
+                                    // WORKAROUND: Use update() instead of retrieve() for INSERT
+                                    // retrieve() is for SELECT queries, update() is for INSERT/UPDATE/DELETE
+                                    $certificateDao->update(
                                         'INSERT INTO reviewer_certificates
                                             (reviewer_id, submission_id, review_id, context_id, template_id, date_issued, certificate_code, download_count)
                                         VALUES (?, ?, ?, ?, NULL, ?, ?, 0)',
@@ -281,15 +280,15 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                     $insertId = $certificateDao->getInsertId();
 
                                     $duration = round((microtime(true) - $startTime) * 1000, 2);
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1600 *** Direct INSERT SUCCESS in {$duration}ms! ID: $insertId");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Direct INSERT SUCCESS in {$duration}ms! ID: $insertId");
                                     $generated++;
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1600 *** Certificate created, total: $generated");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Certificate created, total: $generated");
                                 } catch (Throwable $insertError) {
                                     $duration = isset($startTime) ? round((microtime(true) - $startTime) * 1000, 2) : 'N/A';
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1600 *** INSERT FAILED after {$duration}ms!");
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1600 *** Error: " . $insertError->getMessage());
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1600 *** Error type: " . get_class($insertError));
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1600 *** Stack trace: " . $insertError->getTraceAsString());
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** INSERT FAILED after {$duration}ms!");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Error: " . $insertError->getMessage());
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Error type: " . get_class($insertError));
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Stack trace: " . $insertError->getTraceAsString());
 
                                     // Check if it's a lock timeout error
                                     if (strpos($insertError->getMessage(), 'Lock wait timeout') !== false) {
