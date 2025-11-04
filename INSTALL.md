@@ -1,5 +1,9 @@
 # Installation Instructions
 
+**Author**: Serhiy O. Semerikov (Academy of Cognitive and Natural Sciences)
+**Contact**: semerikov@gmail.com
+**Development**: Built with Claude Code (Sonnet 4.5) by Anthropic
+
 ## Prerequisites
 
 - **OJS**: 3.3.x or 3.4.x
@@ -156,3 +160,5 @@ DROP TABLE IF EXISTS certificates;
 ## License
 
 GNU General Public License v3.0
+
+Copyright (c) 2025 Serhiy O. Semerikov, Academy of Cognitive and Natural Sciences

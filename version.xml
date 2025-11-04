@@ -4,16 +4,18 @@
 <!--
   * plugins/generic/reviewerCertificate/version.xml
   *
-  * Copyright (c) 2024
+  * Copyright (c) 2025 Serhiy O. Semerikov, Academy of Cognitive and Natural Sciences
+  * Author: Serhiy O. Semerikov <semerikov@gmail.com>
   * Distributed under the GNU GPL v3.
   *
   * Plugin version information
+  * Developed with Claude Code (Sonnet 4.5) by Anthropic
   -->
 <version>
 	<application>reviewerCertificate</application>
 	<type>plugins.generic</type>
 	<release>1.0.0.0</release>
-	<date>2024-01-01</date>
+	<date>2025-11-04</date>
 	<lazy-load>1</lazy-load>
 	<class>ReviewerCertificatePlugin</class>
 	<sitewide>0</sitewide>
