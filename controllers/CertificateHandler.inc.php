@@ -89,7 +89,9 @@ class CertificateHandler extends Handler {
 
         if (!$reviewId || !$user) {
             error_log('Certificate download failed: Missing review ID or user');
-            $request->getDispatcher()->handle404();
+            http_response_code(404);
+            fatalError('Not found');
+            return;
         }
 
         // Get review assignment
@@ -98,13 +100,17 @@ class CertificateHandler extends Handler {
 
         if (!$reviewAssignment) {
             error_log('Certificate download failed: Review assignment not found');
-            $request->getDispatcher()->handle404();
+            http_response_code(404);
+            fatalError('Review assignment not found');
+            return;
         }
 
         // Validate access - user must be the reviewer
         if ($reviewAssignment->getReviewerId() != $user->getId()) {
-            error_log('Certificate download failed: Access denied for user ' . $user->getId());
-            $request->getDispatcher()->handle403();
+            error_log('Certificate download failed: Access denied for user ' . $user->getId() . ', review belongs to reviewer ' . $reviewAssignment->getReviewerId());
+            http_response_code(403);
+            fatalError(__('plugins.generic.reviewerCertificate.error.accessDenied'));
+            return;
         }
 
         // Check if review is completed
@@ -194,18 +200,14 @@ class CertificateHandler extends Handler {
         $plugin = $this->getPlugin();
         if ($plugin) {
             $templateResource = $plugin->getTemplateResource('verify.tpl');
-            error_log('ReviewerCertificate: Using template resource: ' . $templateResource);
             return $templateMgr->display($templateResource);
         } else {
             // Fallback: construct absolute path
             // Plugin not available - use absolute path as last resort
-            error_log('ReviewerCertificate: Plugin not available, using absolute path fallback');
             $pluginPath = dirname(__FILE__) . '/../templates/verify.tpl';
-            error_log('ReviewerCertificate: Absolute template path: ' . $pluginPath);
 
             // Check if file exists
             if (file_exists($pluginPath)) {
-                error_log('ReviewerCertificate: Template file exists, displaying with file: prefix');
                 return $templateMgr->display('file:' . $pluginPath);
             } else {
                 error_log('ReviewerCertificate: ERROR - Template file not found at: ' . $pluginPath);
