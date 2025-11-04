@@ -39,12 +39,21 @@ if (!$configPath) {
 // Parse config.inc.php to get database credentials
 $configContent = file_get_contents($configPath);
 
-// Extract database settings
-preg_match('/driver\s*=\s*(\w+)/', $configContent, $driverMatch);
-preg_match('/host\s*=\s*([^\s]+)/', $configContent, $hostMatch);
-preg_match('/username\s*=\s*([^\s]+)/', $configContent, $userMatch);
-preg_match('/password\s*=\s*"?([^"\n]+)"?/', $configContent, $passMatch);
-preg_match('/name\s*=\s*([^\s]+)/', $configContent, $nameMatch);
+// Extract only the [database] section to avoid matching wrong values
+if (preg_match('/\[database\](.*?)(?=\[|$)/s', $configContent, $dbSection)) {
+    $dbSectionContent = $dbSection[1];
+} else {
+    echo "ERROR: Could not find [database] section in config.inc.php\n";
+    echo "Config path: $configPath\n\n";
+    exit(1);
+}
+
+// Extract database settings from [database] section only
+preg_match('/driver\s*=\s*(\w+)/', $dbSectionContent, $driverMatch);
+preg_match('/host\s*=\s*([^\s]+)/', $dbSectionContent, $hostMatch);
+preg_match('/username\s*=\s*([^\s]+)/', $dbSectionContent, $userMatch);
+preg_match('/password\s*=\s*"?([^"\n]+)"?/', $dbSectionContent, $passMatch);
+preg_match('/name\s*=\s*([^\s]+)/', $dbSectionContent, $nameMatch);
 
 $dbDriver = isset($driverMatch[1]) ? $driverMatch[1] : 'mysqli';
 $dbHost = isset($hostMatch[1]) ? $hostMatch[1] : 'localhost';
@@ -54,7 +63,10 @@ $dbName = isset($nameMatch[1]) ? $nameMatch[1] : '';
 
 if (empty($dbName) || empty($dbUser)) {
     echo "ERROR: Could not parse database credentials from config.inc.php\n";
-    echo "Config path: $configPath\n\n";
+    echo "Config path: $configPath\n";
+    echo "Found database name: " . ($dbName ? $dbName : "NONE") . "\n";
+    echo "Found username: " . ($dbUser ? $dbUser : "NONE") . "\n\n";
+    echo "Please use BATCH_GENERATE_MANUAL.php instead and provide credentials explicitly.\n\n";
     exit(1);
 }
 
