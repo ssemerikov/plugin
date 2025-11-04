@@ -3,7 +3,10 @@
 
 ### Plugin Version: 1.0.0
 ### OJS Compatibility: 3.3.x and 3.4.x
-### Date: November 2, 2024
+### Date: November 4, 2025
+### Author: Serhiy O. Semerikov (Academy of Cognitive and Natural Sciences)
+### Contact: semerikov@gmail.com
+### Development: Built with Claude Code (Sonnet 4.5) by Anthropic
 
 ---
 
@@ -264,7 +267,7 @@ If upgrading from a development version:
 
 ## Changelog
 
-### Version 1.0.0 (2024-11-02)
+### Version 1.0.0 (2025-11-04)
 - Initial release
 - Full OJS 3.4.x compatibility
 - Migration-based schema installation
@@ -280,11 +283,18 @@ If upgrading from a development version:
 
 GNU General Public License v3.0
 
+Copyright (c) 2025 Serhiy O. Semerikov, Academy of Cognitive and Natural Sciences
+
 ---
 
 ## Credits
 
+**Author**: Serhiy O. Semerikov (Academy of Cognitive and Natural Sciences)
+**Contact**: semerikov@gmail.com
+
 Developed for Open Journal Systems (OJS) to support and recognize peer reviewers' contributions to scholarly publishing.
+
+**Development Tools**: Built with Claude Code (Sonnet 4.5) by Anthropic
 
 **Dependencies**:
 - TCPDF (included with OJS)

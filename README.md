@@ -4,6 +4,26 @@
 
 The Reviewer Certificate Plugin enables reviewers to generate and download personalized PDF certificates of recognition after completing peer reviews. This plugin helps journals acknowledge and incentivize quality peer review work.
 
+## Author
+
+**Serhiy O. Semerikov**
+Academy of Cognitive and Natural Sciences
+Email: semerikov@gmail.com
+
+## Development
+
+This plugin was developed with the assistance of **Claude Code (Sonnet 4.5)**, an AI-powered coding assistant by Anthropic. Claude Code was used throughout the development process for:
+
+- **Code Architecture**: Designing the plugin structure and component organization
+- **Implementation**: Writing PHP classes, controllers, and data access objects
+- **OJS Integration**: Ensuring compatibility with OJS 3.3.x and 3.4.x APIs
+- **Database Design**: Creating the migration system and schema
+- **Testing & Debugging**: Identifying and fixing compatibility issues
+- **Documentation**: Creating comprehensive user and technical documentation
+- **Code Review**: Analyzing code quality and identifying potential improvements
+
+The iterative development approach with Claude Code enabled rapid prototyping, thorough testing across OJS versions, and production-ready code quality.
+
 ## Features
 
 - **Automated Certificate Generation**: Certificates are automatically available when reviewers complete their reviews
@@ -283,11 +303,11 @@ Contributions are welcome! Please:
 
 This plugin is licensed under the GNU General Public License v3.0.
 
-Copyright (c) 2024
+Copyright (c) 2025 Serhiy O. Semerikov, Academy of Cognitive and Natural Sciences
 
 ## Changelog
 
-### Version 1.0.0 (2024-01-01)
+### Version 1.0.0 (2025-11-04)
 
 - Initial release
 - Basic certificate generation
@@ -298,7 +318,12 @@ Copyright (c) 2024
 
 ## Credits
 
+**Author**: Serhiy O. Semerikov (Academy of Cognitive and Natural Sciences)
+**Contact**: semerikov@gmail.com
+
 Developed for the Open Journal Systems community to support and recognize peer reviewers' contributions to scholarly publishing.
+
+**Development Tools**: Built with Claude Code (Sonnet 4.5) by Anthropic
 
 ## Additional Resources
 

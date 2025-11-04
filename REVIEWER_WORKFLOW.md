@@ -1,5 +1,8 @@
 # Reviewer Certificate Workflow
 
+**Author**: Serhiy O. Semerikov (Academy of Cognitive and Natural Sciences)
+**Contact**: semerikov@gmail.com
+
 ## How Reviewers Access Their Certificates
 
 ### Overview
