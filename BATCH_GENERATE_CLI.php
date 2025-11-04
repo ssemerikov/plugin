@@ -12,21 +12,32 @@
  *   (Generates certificates for reviewers 33, 59, and 5 in journal ID 4)
  */
 
-// Find OJS installation root
-$ojsRoot = dirname(dirname(dirname(__FILE__)));
-$toolsPath = $ojsRoot . '/tools/bootstrap.inc.php';
+// Find OJS installation root - try multiple common paths
+$possiblePaths = array(
+    dirname(dirname(dirname(__FILE__))) . '/tools/bootstrap.inc.php',  // Standard: /ojs/tools/
+    dirname(dirname(dirname(dirname(__FILE__)))) . '/tools/bootstrap.inc.php',  // One level up
+    dirname(dirname(dirname(__FILE__))) . '/lib/pkp/tools/bootstrap.inc.php',  // PKP lib path
+    '/home/easyscie/acnsci.org/journal/tools/bootstrap.inc.php',  // Absolute path attempt 1
+    '/home/easyscie/acnsci.org/lib/pkp/tools/bootstrap.inc.php',  // Absolute path attempt 2
+);
 
-if (!file_exists($toolsPath)) {
-    // Try alternative path
-    $toolsPath = dirname(dirname(dirname(dirname(__FILE__)))) . '/tools/bootstrap.inc.php';
+$toolsPath = null;
+foreach ($possiblePaths as $path) {
+    if (file_exists($path)) {
+        $toolsPath = $path;
+        break;
+    }
 }
 
-if (!file_exists($toolsPath)) {
-    echo "ERROR: Cannot find OJS bootstrap.inc.php\n";
-    echo "Tried: $toolsPath\n";
-    echo "\nPlease run this script from the plugin directory:\n";
-    echo "  cd /path/to/ojs/plugins/generic/reviewerCertificate\n";
-    echo "  php BATCH_GENERATE_CLI.php [journal_id] [reviewer_ids...]\n\n";
+if (!$toolsPath) {
+    echo "ERROR: Cannot find OJS bootstrap.inc.php\n\n";
+    echo "Tried the following paths:\n";
+    foreach ($possiblePaths as $path) {
+        echo "  - $path\n";
+    }
+    echo "\nTo fix this, find your OJS installation directory and run:\n";
+    echo "  find /home/easyscie/acnsci.org -name 'bootstrap.inc.php' -type f\n\n";
+    echo "Then edit BATCH_GENERATE_CLI.php and add the correct path to \$possiblePaths array.\n\n";
     exit(1);
 }
 
