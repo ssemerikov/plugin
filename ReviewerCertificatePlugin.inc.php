@@ -250,8 +250,8 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                 error_log("ReviewerCertificate: *** VERSION_20251104_1400 *** About to insert certificate for review_id=" . $row->review_id);
                                 error_log("ReviewerCertificate: Certificate data: reviewer_id=" . $row->reviewer_id . ", submission_id=" . $row->submission_id . ", code=" . $certificate->getCertificateCode());
 
+                                $startTime = microtime(true);
                                 try {
-                                    $startTime = microtime(true);
                                     error_log("ReviewerCertificate: *** VERSION_20251104_1400 *** Calling insertObject() NOW at " . date('H:i:s'));
 
                                     $insertResult = $certificateDao->insertObject($certificate);
@@ -261,7 +261,7 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                     $generated++;
                                     error_log("ReviewerCertificate: *** VERSION_20251104_1400 *** Certificate created, total: $generated");
                                 } catch (Throwable $insertError) {
-                                    $duration = round((microtime(true) - $startTime) * 1000, 2);
+                                    $duration = isset($startTime) ? round((microtime(true) - $startTime) * 1000, 2) : 'N/A';
                                     error_log("ReviewerCertificate: *** VERSION_20251104_1400 *** insertObject() FAILED after {$duration}ms!");
                                     error_log("ReviewerCertificate: *** VERSION_20251104_1400 *** Error: " . $insertError->getMessage());
                                     error_log("ReviewerCertificate: *** VERSION_20251104_1400 *** Error type: " . get_class($insertError));
@@ -271,6 +271,9 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                     if (strpos($insertError->getMessage(), 'Lock wait timeout') !== false) {
                                         error_log("ReviewerCertificate: *** LOCK TIMEOUT DETECTED *** Another process may be holding a lock on reviewer_certificates table");
                                         $errors[] = "Lock timeout for review_id {$row->review_id} - please try again";
+                                    } else if (strpos($insertError->getMessage(), 'Duplicate entry') !== false) {
+                                        error_log("ReviewerCertificate: *** DUPLICATE ENTRY *** Certificate may already exist for review_id {$row->review_id}");
+                                        $errors[] = "Certificate already exists for review_id {$row->review_id}";
                                     }
                                     // Continue with next certificate even if this one fails
                                 }
