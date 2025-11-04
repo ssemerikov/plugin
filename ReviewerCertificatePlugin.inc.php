@@ -254,41 +254,73 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                 $certificate->setCertificateCode(strtoupper(substr(md5($row->review_id . time() . uniqid()), 0, 12)));
                                 $certificate->setDownloadCount(0);
 
-                                error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** About to insert certificate for review_id=" . $row->review_id);
+                                error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** About to insert certificate for review_id=" . $row->review_id);
                                 error_log("ReviewerCertificate: Certificate data: reviewer_id=" . $row->reviewer_id . ", submission_id=" . $row->submission_id . ", code=" . $certificate->getCertificateCode());
 
                                 $startTime = microtime(true);
                                 try {
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Using update() method for INSERT");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Using RAW MYSQLI bypass - avoiding ALL OJS DAO infrastructure");
 
-                                    // WORKAROUND: Use update() instead of retrieve() for INSERT
-                                    // retrieve() is for SELECT queries, update() is for INSERT/UPDATE/DELETE
-                                    $certificateDao->update(
-                                        'INSERT INTO reviewer_certificates
-                                            (reviewer_id, submission_id, review_id, context_id, template_id, date_issued, certificate_code, download_count)
-                                        VALUES (?, ?, ?, ?, NULL, ?, ?, 0)',
-                                        array(
-                                            (int) $certificate->getReviewerId(),
-                                            (int) $certificate->getSubmissionId(),
-                                            (int) $certificate->getReviewId(),
-                                            (int) $certificate->getContextId(),
-                                            $certificate->getDateIssued(),
-                                            $certificate->getCertificateCode()
-                                        )
+                                    // Get raw database connection from DAO (bypassing all OJS wrappers)
+                                    $dbConn = $certificateDao->_dataSource->getConnection();
+
+                                    if (!$dbConn) {
+                                        throw new Exception("Failed to get raw database connection");
+                                    }
+
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Got raw connection, type: " . get_class($dbConn));
+
+                                    // Use direct mysqli prepare/execute like CLI version (proven to work in 1-5ms)
+                                    $insertSql = "INSERT INTO reviewer_certificates
+                                                  (reviewer_id, submission_id, review_id, context_id, template_id,
+                                                   date_issued, certificate_code, download_count)
+                                                  VALUES (?, ?, ?, ?, NULL, ?, ?, 0)";
+
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Preparing statement...");
+                                    $stmt = $dbConn->prepare($insertSql);
+
+                                    if (!$stmt) {
+                                        throw new Exception("Failed to prepare statement: " . $dbConn->error);
+                                    }
+
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Binding parameters...");
+                                    $reviewerId = (int) $certificate->getReviewerId();
+                                    $submissionId = (int) $certificate->getSubmissionId();
+                                    $reviewId = (int) $certificate->getReviewId();
+                                    $contextId = (int) $certificate->getContextId();
+                                    $dateIssued = $certificate->getDateIssued();
+                                    $certCode = $certificate->getCertificateCode();
+
+                                    $stmt->bind_param('iiiiss',
+                                        $reviewerId,
+                                        $submissionId,
+                                        $reviewId,
+                                        $contextId,
+                                        $dateIssued,
+                                        $certCode
                                     );
 
-                                    $insertId = $certificateDao->getInsertId();
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Executing INSERT NOW...");
+                                    $executeResult = $stmt->execute();
 
-                                    $duration = round((microtime(true) - $startTime) * 1000, 2);
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Direct INSERT SUCCESS in {$duration}ms! ID: $insertId");
-                                    $generated++;
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Certificate created, total: $generated");
+                                    if ($executeResult) {
+                                        $insertId = $dbConn->insert_id;
+                                        $duration = round((microtime(true) - $startTime) * 1000, 2);
+                                        error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** RAW MYSQLI INSERT SUCCESS in {$duration}ms! ID: $insertId");
+                                        $generated++;
+                                        error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Certificate created, total: $generated");
+                                    } else {
+                                        throw new Exception("Execute failed: " . $stmt->error);
+                                    }
+
+                                    $stmt->close();
+
                                 } catch (Throwable $insertError) {
                                     $duration = isset($startTime) ? round((microtime(true) - $startTime) * 1000, 2) : 'N/A';
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** INSERT FAILED after {$duration}ms!");
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Error: " . $insertError->getMessage());
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Error type: " . get_class($insertError));
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1700 *** Stack trace: " . $insertError->getTraceAsString());
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** RAW MYSQLI INSERT FAILED after {$duration}ms!");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Error: " . $insertError->getMessage());
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Error type: " . get_class($insertError));
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Stack trace: " . $insertError->getTraceAsString());
 
                                     // Check if it's a lock timeout error
                                     if (strpos($insertError->getMessage(), 'Lock wait timeout') !== false) {
