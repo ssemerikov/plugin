@@ -1,88 +1,46 @@
 #!/usr/bin/env php
 <?php
 /**
- * Standalone batch certificate generator (no OJS bootstrap required)
- * Connects directly to database using config.inc.php
+ * Manual batch certificate generator with database credentials as parameters
  *
  * Usage:
- *   php BATCH_GENERATE_SIMPLE.php [journal_id] [reviewer_id1] [reviewer_id2] ...
+ *   php BATCH_GENERATE_MANUAL.php [db_name] [db_user] [db_pass] [db_host] [context_id] [reviewer_ids...]
  *
  * Example:
- *   php BATCH_GENERATE_SIMPLE.php 4 33 59 5
+ *   php BATCH_GENERATE_MANUAL.php easyscie_ojsdb easyscie_ojs554 'mypassword' localhost 4 33 59 5
+ *
+ * Or if password contains special characters, use quotes:
+ *   php BATCH_GENERATE_MANUAL.php easyscie_ojsdb easyscie_ojs554 'p@ssw0rd!' localhost 4 33 59 5
  */
 
-// Find config.inc.php
-$configPaths = array(
-    '/home/easyscie/acnsci.org/journal/config.inc.php',
-    dirname(dirname(dirname(__FILE__))) . '/config.inc.php',
-    dirname(dirname(dirname(dirname(__FILE__)))) . '/config.inc.php',
-);
-
-$configPath = null;
-foreach ($configPaths as $path) {
-    if (file_exists($path)) {
-        $configPath = $path;
-        break;
-    }
-}
-
-if (!$configPath) {
-    echo "ERROR: Cannot find config.inc.php\n\n";
-    echo "Tried:\n";
-    foreach ($configPaths as $path) {
-        echo "  - $path\n";
-    }
-    echo "\nPlease run from: /home/easyscie/acnsci.org/journal/plugins/generic/reviewerCertificate/\n\n";
+if ($argc < 7) {
+    echo "\n=== Manual Batch Certificate Generator ===\n\n";
+    echo "Usage:\n";
+    echo "  php BATCH_GENERATE_MANUAL.php [db_name] [db_user] [db_pass] [db_host] [context_id] [reviewer_ids...]\n\n";
+    echo "Parameters:\n";
+    echo "  db_name      Database name\n";
+    echo "  db_user      Database username\n";
+    echo "  db_pass      Database password (use quotes if it has special chars)\n";
+    echo "  db_host      Database host (usually 'localhost')\n";
+    echo "  context_id   Journal/Context ID\n";
+    echo "  reviewer_ids One or more reviewer IDs to generate certificates for\n\n";
+    echo "Example:\n";
+    echo "  php BATCH_GENERATE_MANUAL.php easyscie_ojsdb easyscie_ojs554 'password123' localhost 4 33 59 5\n\n";
+    echo "To find your database credentials, check:\n";
+    echo "  /home/easyscie/acnsci.org/journal/config.inc.php\n";
+    echo "  Look in the [database] section\n\n";
     exit(1);
 }
-
-// Parse config.inc.php to get database credentials
-$configContent = file_get_contents($configPath);
-
-// Extract only the [database] section to avoid matching wrong values
-if (preg_match('/\[database\](.*?)(?=\[|$)/s', $configContent, $dbSection)) {
-    $dbSectionContent = $dbSection[1];
-} else {
-    echo "ERROR: Could not find [database] section in config.inc.php\n";
-    echo "Config path: $configPath\n\n";
-    exit(1);
-}
-
-// Extract database settings from [database] section only
-preg_match('/driver\s*=\s*(\w+)/', $dbSectionContent, $driverMatch);
-preg_match('/host\s*=\s*([^\s]+)/', $dbSectionContent, $hostMatch);
-preg_match('/username\s*=\s*([^\s]+)/', $dbSectionContent, $userMatch);
-preg_match('/password\s*=\s*"?([^"\n]+)"?/', $dbSectionContent, $passMatch);
-preg_match('/name\s*=\s*([^\s]+)/', $dbSectionContent, $nameMatch);
-
-$dbDriver = isset($driverMatch[1]) ? $driverMatch[1] : 'mysqli';
-$dbHost = isset($hostMatch[1]) ? $hostMatch[1] : 'localhost';
-$dbUser = isset($userMatch[1]) ? $userMatch[1] : '';
-$dbPass = isset($passMatch[1]) ? trim($passMatch[1], '"') : '';
-$dbName = isset($nameMatch[1]) ? $nameMatch[1] : '';
-
-if (empty($dbName) || empty($dbUser)) {
-    echo "ERROR: Could not parse database credentials from config.inc.php\n";
-    echo "Config path: $configPath\n";
-    echo "Found database name: " . ($dbName ? $dbName : "NONE") . "\n";
-    echo "Found username: " . ($dbUser ? $dbUser : "NONE") . "\n\n";
-    echo "Please use BATCH_GENERATE_MANUAL.php instead and provide credentials explicitly.\n\n";
-    exit(1);
-}
-
-echo "\n=== Batch Certificate Generator (Simple) ===\n\n";
 
 // Parse arguments
-if ($argc < 3) {
-    echo "Usage: php BATCH_GENERATE_SIMPLE.php [journal_id] [reviewer_id1] [reviewer_id2] ...\n\n";
-    echo "Example:\n";
-    echo "  php BATCH_GENERATE_SIMPLE.php 4 33 59 5\n\n";
-    exit(1);
-}
+$dbName = $argv[1];
+$dbUser = $argv[2];
+$dbPass = $argv[3];
+$dbHost = $argv[4];
+$contextId = (int) $argv[5];
+$reviewerIds = array_slice($argv, 6);
 
-$contextId = (int) $argv[1];
-$reviewerIds = array_slice($argv, 2);
-
+echo "\n=== Manual Batch Certificate Generator ===\n\n";
 echo "Database: $dbName@$dbHost\n";
 echo "User: $dbUser\n";
 echo "Journal/Context ID: $contextId\n";
@@ -100,13 +58,14 @@ flush();
 $conn = @new mysqli($dbHost, $dbUser, $dbPass, $dbName);
 
 if ($conn->connect_error) {
-    echo "ERROR: Database connection failed\n";
-    echo "Error (#" . $conn->connect_errno . "): " . $conn->connect_error . "\n";
-    echo "\nPlease check:\n";
-    echo "  - Database host: $dbHost\n";
-    echo "  - Database user: $dbUser\n";
-    echo "  - Database name: $dbName\n";
-    echo "  - Password is set: " . (empty($dbPass) ? "NO" : "YES") . "\n\n";
+    echo "✗ ERROR: Database connection failed\n";
+    echo "Error (#" . $conn->connect_errno . "): " . $conn->connect_error . "\n\n";
+    echo "Please check:\n";
+    echo "  1. Database name is correct: $dbName\n";
+    echo "  2. Database user has access: $dbUser\n";
+    echo "  3. Password is correct (length: " . strlen($dbPass) . " chars)\n";
+    echo "  4. Host is correct: $dbHost\n\n";
+    echo "To verify, check: /home/easyscie/acnsci.org/journal/config.inc.php\n\n";
     exit(1);
 }
 
@@ -153,6 +112,7 @@ foreach ($reviewerIds as $reviewerId) {
         $submissionId = $row['submission_id'];
 
         echo "  Review ID $reviewId: ";
+        flush();
 
         // Generate certificate code
         $certCode = strtoupper(substr(md5($reviewId . time() . uniqid()), 0, 12));
