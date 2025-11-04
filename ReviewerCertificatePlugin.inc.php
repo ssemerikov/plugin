@@ -13,6 +13,7 @@
 
 import('lib.pkp.classes.plugins.GenericPlugin');
 import('lib.pkp.classes.core.JSONMessage');
+import('lib.pkp.classes.config.Config');
 
 use APP\facades\Repo;
 
@@ -254,21 +255,28 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                 $certificate->setCertificateCode(strtoupper(substr(md5($row->review_id . time() . uniqid()), 0, 12)));
                                 $certificate->setDownloadCount(0);
 
-                                error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** About to insert certificate for review_id=" . $row->review_id);
+                                error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** About to insert certificate for review_id=" . $row->review_id);
                                 error_log("ReviewerCertificate: Certificate data: reviewer_id=" . $row->reviewer_id . ", submission_id=" . $row->submission_id . ", code=" . $certificate->getCertificateCode());
 
                                 $startTime = microtime(true);
                                 try {
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Using RAW MYSQLI bypass - avoiding ALL OJS DAO infrastructure");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** Using FRESH MYSQLI connection - completely independent from OJS");
 
-                                    // Get raw database connection from DAO (bypassing all OJS wrappers)
-                                    $dbConn = $certificateDao->_dataSource->getConnection();
+                                    // Create fresh mysqli connection using OJS config (like CLI version that works)
+                                    $dbHost = Config::getVar('database', 'host');
+                                    $dbUser = Config::getVar('database', 'username');
+                                    $dbPass = Config::getVar('database', 'password');
+                                    $dbName = Config::getVar('database', 'name');
 
-                                    if (!$dbConn) {
-                                        throw new Exception("Failed to get raw database connection");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** Creating fresh mysqli connection to $dbName@$dbHost");
+
+                                    $dbConn = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
+
+                                    if ($dbConn->connect_error) {
+                                        throw new Exception("Connection failed: " . $dbConn->connect_error);
                                     }
 
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Got raw connection, type: " . get_class($dbConn));
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** Fresh connection created successfully");
 
                                     // Use direct mysqli prepare/execute like CLI version (proven to work in 1-5ms)
                                     $insertSql = "INSERT INTO reviewer_certificates
@@ -276,14 +284,14 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                                    date_issued, certificate_code, download_count)
                                                   VALUES (?, ?, ?, ?, NULL, ?, ?, 0)";
 
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Preparing statement...");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** Preparing statement...");
                                     $stmt = $dbConn->prepare($insertSql);
 
                                     if (!$stmt) {
                                         throw new Exception("Failed to prepare statement: " . $dbConn->error);
                                     }
 
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Binding parameters...");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** Binding parameters...");
                                     $reviewerId = (int) $certificate->getReviewerId();
                                     $submissionId = (int) $certificate->getSubmissionId();
                                     $reviewId = (int) $certificate->getReviewId();
@@ -300,27 +308,28 @@ class ReviewerCertificatePlugin extends GenericPlugin {
                                         $certCode
                                     );
 
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Executing INSERT NOW...");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** Executing INSERT NOW...");
                                     $executeResult = $stmt->execute();
 
                                     if ($executeResult) {
                                         $insertId = $dbConn->insert_id;
                                         $duration = round((microtime(true) - $startTime) * 1000, 2);
-                                        error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** RAW MYSQLI INSERT SUCCESS in {$duration}ms! ID: $insertId");
+                                        error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** FRESH MYSQLI INSERT SUCCESS in {$duration}ms! ID: $insertId");
                                         $generated++;
-                                        error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Certificate created, total: $generated");
+                                        error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** Certificate created, total: $generated");
                                     } else {
                                         throw new Exception("Execute failed: " . $stmt->error);
                                     }
 
                                     $stmt->close();
+                                    $dbConn->close();
 
                                 } catch (Throwable $insertError) {
                                     $duration = isset($startTime) ? round((microtime(true) - $startTime) * 1000, 2) : 'N/A';
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** RAW MYSQLI INSERT FAILED after {$duration}ms!");
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Error: " . $insertError->getMessage());
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Error type: " . get_class($insertError));
-                                    error_log("ReviewerCertificate: *** VERSION_20251104_1800 *** Stack trace: " . $insertError->getTraceAsString());
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** FRESH MYSQLI INSERT FAILED after {$duration}ms!");
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** Error: " . $insertError->getMessage());
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** Error type: " . get_class($insertError));
+                                    error_log("ReviewerCertificate: *** VERSION_20251104_1900 *** Stack trace: " . $insertError->getTraceAsString());
 
                                     // Check if it's a lock timeout error
                                     if (strpos($insertError->getMessage(), 'Lock wait timeout') !== false) {
