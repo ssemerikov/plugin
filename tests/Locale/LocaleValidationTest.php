@@ -16,7 +16,7 @@ class LocaleValidationTest extends PHPUnitTestCase {
     private $baseDir;
     private $localeDir;
     private $referenceLocale = 'en_US';
-    private $supportedLocales = ['en_US', 'uk_UA', 'ru_RU', 'es_ES'];
+    private $supportedLocales = ['en_US', 'uk_UA', 'ru_RU', 'es_ES', 'pt_BR', 'fr_FR', 'de_DE'];
 
     protected function setUp(): void {
         parent::setUp();
@@ -322,6 +322,9 @@ class LocaleValidationTest extends PHPUnitTestCase {
             'uk_UA' => 'Українська',
             'ru_RU' => 'Русский',
             'es_ES' => 'Español',
+            'pt_BR' => 'Português (Brasil)',
+            'fr_FR' => 'Français (France)',
+            'de_DE' => 'Deutsch (Deutschland)',
         ];
 
         foreach ($this->supportedLocales as $locale) {

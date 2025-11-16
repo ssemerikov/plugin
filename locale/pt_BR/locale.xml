@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
+
+<!--
+  * plugins/generic/reviewerCertificate/locale/pt_BR/locale.xml
+  *
+  * Copyright (c) 2024
+  * Distributed under the GNU GPL v3.
+  *
+  * Localization strings - Portuguese (Brazil)
+  * NOTE: This translation uses Brazilian Portuguese conventions and terminology.
+  * Reviewed for SciELO and Brazilian academic publishing context.
+  -->
+
+<locale name="pt_BR" full_name="Português (Brasil)">
+	<!-- Plugin metadata -->
+	<message key="plugins.generic.reviewerCertificate.displayName">Plugin de Certificados de Avaliadores</message>
+	<message key="plugins.generic.reviewerCertificate.description">Permite que avaliadores gerem e baixem certificados PDF personalizados de reconhecimento após concluírem as avaliações.</message>
+
+	<!-- Certificate titles -->
+	<message key="plugins.generic.reviewerCertificate.certificateTitle">Certificado de Avaliação</message>
+	<message key="plugins.generic.reviewerCertificate.certificateSubject">Certificado de Avaliação por Pares</message>
+
+	<!-- Dashboard messages -->
+	<message key="plugins.generic.reviewerCertificate.certificateAvailable">Seu certificado está pronto!</message>
+	<message key="plugins.generic.reviewerCertificate.certificateAvailableDescription">Obrigado por concluir esta avaliação. Agora você pode baixar seu certificado de reconhecimento.</message>
+	<message key="plugins.generic.reviewerCertificate.certificateWillBeGenerated">Seu certificado será gerado automaticamente quando você clicar no botão de download.</message>
+	<message key="plugins.generic.reviewerCertificate.downloadCertificate">Baixar Certificado</message>
+
+	<!-- Settings form -->
+	<message key="plugins.generic.reviewerCertificate.settings">Configurações de Certificados</message>
+	<message key="plugins.generic.reviewerCertificate.settings.description">Configure os modelos de certificados e os critérios de elegibilidade para avaliadores.</message>
+	<message key="plugins.generic.reviewerCertificate.settings.templateSettings">Configurações do Modelo de Certificado</message>
+
+	<!-- Background Image -->
+	<message key="plugins.generic.reviewerCertificate.settings.backgroundImage">Imagem de Fundo</message>
+	<message key="plugins.generic.reviewerCertificate.settings.backgroundImageDescription">Envie uma imagem de fundo para o certificado (JPG ou PNG, tamanho recomendado: 2100x2970 pixels para A4)</message>
+	<message key="plugins.generic.reviewerCertificate.settings.currentImage">Imagem de fundo atual</message>
+
+	<!-- Header Text -->
+	<message key="plugins.generic.reviewerCertificate.settings.headerText">Texto do Cabeçalho</message>
+	<message key="plugins.generic.reviewerCertificate.settings.headerTextDescription">O cabeçalho principal exibido na parte superior do certificado</message>
+	<message key="plugins.generic.reviewerCertificate.settings.headerTextRequired">O texto do cabeçalho é obrigatório</message>
+
+	<!-- Body Template -->
+	<message key="plugins.generic.reviewerCertificate.settings.bodyTemplate">Modelo do Corpo do Certificado</message>
+	<message key="plugins.generic.reviewerCertificate.settings.bodyTemplateDescription">O conteúdo principal do certificado. Use variáveis de modelo para inserir conteúdo dinâmico.</message>
+	<message key="plugins.generic.reviewerCertificate.settings.bodyTemplateRequired">O modelo do corpo do certificado é obrigatório</message>
+
+	<!-- Footer Text -->
+	<message key="plugins.generic.reviewerCertificate.settings.footerText">Texto do Rodapé</message>
+	<message key="plugins.generic.reviewerCertificate.settings.footerTextDescription">Texto opcional exibido na parte inferior do certificado</message>
+
+	<!-- Available Variables -->
+	<message key="plugins.generic.reviewerCertificate.settings.availableVariables">Variáveis de Modelo Disponíveis</message>
+	<message key="plugins.generic.reviewerCertificate.settings.availableVariablesDescription">Use estas variáveis em seus modelos para inserir conteúdo dinâmico:</message>
+	<message key="plugins.generic.reviewerCertificate.settings.defaultTemplate">Modelo padrão</message>
+	<message key="plugins.generic.reviewerCertificate.settings.useDefaultTemplate">Usar modelo padrão</message>
+
+	<!-- Appearance settings -->
+	<message key="plugins.generic.reviewerCertificate.settings.appearance">Configurações de Aparência</message>
+	<message key="plugins.generic.reviewerCertificate.settings.fontFamily">Família de Fonte</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.helvetica">Helvetica</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.times">Times New Roman</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.courier">Courier</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.dejavusans">DejaVu Sans</message>
+	<message key="plugins.generic.reviewerCertificate.settings.fontSize">Tamanho da Fonte</message>
+	<message key="plugins.generic.reviewerCertificate.settings.textColor">Cor do Texto (RGB)</message>
+	<message key="plugins.generic.reviewerCertificate.settings.textColorDescription">Especifique a cor do texto usando valores RGB (0-255 para cada componente)</message>
+
+	<!-- Eligibility settings -->
+	<message key="plugins.generic.reviewerCertificate.settings.eligibility">Critérios de Elegibilidade</message>
+	<message key="plugins.generic.reviewerCertificate.settings.minimumReviews">Avaliações Concluídas Mínimas</message>
+	<message key="plugins.generic.reviewerCertificate.settings.minimumReviewsDescription">O número mínimo de avaliações concluídas necessário antes que um avaliador possa receber um certificado</message>
+	<message key="plugins.generic.reviewerCertificate.settings.minimumReviewsInvalid">O número mínimo de avaliações deve ser um número maior ou igual a 1</message>
+
+	<!-- Verification -->
+	<message key="plugins.generic.reviewerCertificate.settings.verification">Opções de Verificação</message>
+	<message key="plugins.generic.reviewerCertificate.settings.includeQRCode">Incluir código QR para verificação do certificado</message>
+	<message key="plugins.generic.reviewerCertificate.settings.previewCertificate">Visualizar Certificado</message>
+	<message key="plugins.generic.reviewerCertificate.settings.invalidImageType">Tipo de imagem inválido. Por favor, envie um arquivo JPG ou PNG.</message>
+	<message key="plugins.generic.reviewerCertificate.settings.uploadFailed">Falha no envio do arquivo. Por favor, tente novamente.</message>
+
+	<!-- Error messages -->
+	<message key="plugins.generic.reviewerCertificate.error.reviewNotCompleted">Esta avaliação ainda não foi concluída. Certificados estão disponíveis apenas para avaliações concluídas.</message>
+	<message key="plugins.generic.reviewerCertificate.error.noCertificateCode">Nenhum código de certificado fornecido</message>
+	<message key="plugins.generic.reviewerCertificate.error.invalidCertificate">Código de certificado inválido. Este certificado não pôde ser verificado.</message>
+	<message key="plugins.generic.reviewerCertificate.error.noReviewersSelected">Nenhum avaliador selecionado para geração em lote de certificados</message>
+	<message key="plugins.generic.reviewerCertificate.error.accessDenied">Acesso negado. Você não tem permissão para baixar este certificado.</message>
+	<message key="plugins.generic.reviewerCertificate.error.noContext">Nenhum contexto de revista disponível. Certifique-se de estar acessando de uma revista válida.</message>
+	<message key="plugins.generic.reviewerCertificate.error.daoNotAvailable">O acesso ao banco de dados está indisponível no momento. Por favor, contate o administrador do sistema.</message>
+
+	<!-- Verification -->
+	<message key="plugins.generic.reviewerCertificate.verify.title">Verificar Certificado</message>
+	<message key="plugins.generic.reviewerCertificate.verify.description">Digite um código de certificado para verificar sua autenticidade</message>
+	<message key="plugins.generic.reviewerCertificate.verify.code">Código do Certificado</message>
+	<message key="plugins.generic.reviewerCertificate.verify.button">Verificar Certificado</message>
+	<message key="plugins.generic.reviewerCertificate.verify.valid">Certificado Válido</message>
+	<message key="plugins.generic.reviewerCertificate.verify.invalid">Certificado Inválido</message>
+	<message key="plugins.generic.reviewerCertificate.verify.invalidDescription">O código de certificado que você digitou não é válido ou não existe em nosso sistema.</message>
+	<message key="plugins.generic.reviewerCertificate.verify.certificateCode">Código do Certificado</message>
+	<message key="plugins.generic.reviewerCertificate.verify.reviewerName">Nome do Avaliador</message>
+	<message key="plugins.generic.reviewerCertificate.verify.journalName">Nome da Revista</message>
+	<message key="plugins.generic.reviewerCertificate.verify.dateIssued">Data de Emissão</message>
+
+	<!-- Batch generation -->
+	<message key="plugins.generic.reviewerCertificate.batch.title">Geração em Lote de Certificados</message>
+	<message key="plugins.generic.reviewerCertificate.batch.description">Gere certificados para múltiplos avaliadores de uma vez. Selecione avaliadores da lista abaixo que concluíram avaliações mas ainda não possuem certificados.</message>
+	<message key="plugins.generic.reviewerCertificate.batch.selectReviewers">Selecionar Avaliadores</message>
+	<message key="plugins.generic.reviewerCertificate.batch.completedReviews">avaliações concluídas</message>
+	<message key="plugins.generic.reviewerCertificate.batch.noEligibleReviewers">Nenhum avaliador elegível encontrado. Todos os avaliadores possuem certificados para suas avaliações concluídas.</message>
+	<message key="plugins.generic.reviewerCertificate.batch.selectMultipleHint">Mantenha pressionado Ctrl (Windows/Linux) ou Cmd (Mac) para selecionar múltiplos avaliadores</message>
+	<message key="plugins.generic.reviewerCertificate.batch.generate">Gerar Certificados</message>
+	<message key="plugins.generic.reviewerCertificate.batch.generating">Gerando certificados...</message>
+	<message key="plugins.generic.reviewerCertificate.batch.noSelection">Por favor, selecione pelo menos um avaliador</message>
+	<message key="plugins.generic.reviewerCertificate.batch.certificatesGenerated">certificado(s) gerado(s) com sucesso</message>
+	<message key="plugins.generic.reviewerCertificate.batch.error">Ocorreu um erro ao gerar os certificados. Por favor, tente novamente.</message>
+	<message key="plugins.generic.reviewerCertificate.batch.generated">{$count} certificado(s) gerado(s) com sucesso</message>
+
+	<!-- Statistics -->
+	<message key="plugins.generic.reviewerCertificate.statistics.title">Estatísticas de Certificados</message>
+	<message key="plugins.generic.reviewerCertificate.statistics.description">Visão geral da geração e uso de certificados em sua revista</message>
+	<message key="plugins.generic.reviewerCertificate.statistics.totalCertificates">Total de Certificados Emitidos</message>
+	<message key="plugins.generic.reviewerCertificate.statistics.totalDownloads">Total de Downloads</message>
+	<message key="plugins.generic.reviewerCertificate.statistics.uniqueReviewers">Avaliadores Únicos com Certificados</message>
+	<message key="plugins.generic.reviewerCertificate.stats.totalIssued">Total de Certificados Emitidos</message>
+	<message key="plugins.generic.reviewerCertificate.stats.totalDownloads">Total de Downloads</message>
+	<message key="plugins.generic.reviewerCertificate.stats.averageDownloads">Média de Downloads por Certificado</message>
+</locale>
