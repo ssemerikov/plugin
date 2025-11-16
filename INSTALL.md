@@ -24,6 +24,8 @@
    - Click **Enable**
    - The database tables will be created automatically
 
+   **Note:** The plugin now includes improved database migration with automatic fallback for OJS 3.3 compatibility. If the modern Laravel migration fails, it will automatically retry using raw SQL commands.
+
 4. **Configure:**
    - Click **Settings** to customize certificate templates
    - Click **Preview Certificate** to test your design
