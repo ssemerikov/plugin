@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
+
+<!--
+  * plugins/generic/reviewerCertificate/locale/uk_UA/locale.xml
+  *
+  * Copyright (c) 2024
+  * Distributed under the GNU GPL v3.
+  *
+  * Localization strings - Ukrainian
+  * NOTE: This translation should be reviewed by a native Ukrainian speaker before production use.
+  -->
+
+<locale name="uk_UA" full_name="Українська">
+	<!-- Plugin metadata -->
+	<message key="plugins.generic.reviewerCertificate.displayName">Плагін сертифікатів рецензентів</message>
+	<message key="plugins.generic.reviewerCertificate.description">Дозволяє рецензентам генерувати та завантажувати персоналізовані PDF-сертифікати визнання після завершення рецензування.</message>
+
+	<!-- Certificate titles -->
+	<message key="plugins.generic.reviewerCertificate.certificateTitle">Сертифікат рецензента</message>
+	<message key="plugins.generic.reviewerCertificate.certificateSubject">Сертифікат експертної оцінки</message>
+
+	<!-- Dashboard messages -->
+	<message key="plugins.generic.reviewerCertificate.certificateAvailable">Ваш сертифікат готовий!</message>
+	<message key="plugins.generic.reviewerCertificate.certificateAvailableDescription">Дякуємо за завершення рецензування. Тепер ви можете завантажити свій сертифікат визнання.</message>
+	<message key="plugins.generic.reviewerCertificate.certificateWillBeGenerated">Ваш сертифікат буде згенеровано автоматично при натисканні кнопки завантаження.</message>
+	<message key="plugins.generic.reviewerCertificate.downloadCertificate">Завантажити сертифікат</message>
+
+	<!-- Settings form -->
+	<message key="plugins.generic.reviewerCertificate.settings">Налаштування сертифікатів</message>
+	<message key="plugins.generic.reviewerCertificate.settings.description">Налаштуйте шаблони сертифікатів та критерії прийнятності для рецензентів.</message>
+	<message key="plugins.generic.reviewerCertificate.settings.templateSettings">Налаштування шаблону сертифіката</message>
+
+	<!-- Background Image -->
+	<message key="plugins.generic.reviewerCertificate.settings.backgroundImage">Фонове зображення</message>
+	<message key="plugins.generic.reviewerCertificate.settings.backgroundImageDescription">Завантажте фонове зображення для сертифіката (JPG або PNG, рекомендований розмір: 2100x2970 пікселів для A4)</message>
+	<message key="plugins.generic.reviewerCertificate.settings.currentImage">Поточне фонове зображення</message>
+
+	<!-- Header Text -->
+	<message key="plugins.generic.reviewerCertificate.settings.headerText">Текст заголовка</message>
+	<message key="plugins.generic.reviewerCertificate.settings.headerTextDescription">Основний заголовок, що відображається у верхній частині сертифіката</message>
+	<message key="plugins.generic.reviewerCertificate.settings.headerTextRequired">Текст заголовка є обов'язковим</message>
+
+	<!-- Body Template -->
+	<message key="plugins.generic.reviewerCertificate.settings.bodyTemplate">Шаблон тіла сертифіката</message>
+	<message key="plugins.generic.reviewerCertificate.settings.bodyTemplateDescription">Основний вміст сертифіката. Використовуйте змінні шаблону для вставки динамічного вмісту.</message>
+	<message key="plugins.generic.reviewerCertificate.settings.bodyTemplateRequired">Шаблон тіла сертифіката є обов'язковим</message>
+
+	<!-- Footer Text -->
+	<message key="plugins.generic.reviewerCertificate.settings.footerText">Текст нижнього колонтитула</message>
+	<message key="plugins.generic.reviewerCertificate.settings.footerTextDescription">Необов'язковий текст, що відображається у нижній частині сертифіката</message>
+
+	<!-- Available Variables -->
+	<message key="plugins.generic.reviewerCertificate.settings.availableVariables">Доступні змінні шаблону</message>
+	<message key="plugins.generic.reviewerCertificate.settings.availableVariablesDescription">Використовуйте ці змінні у своїх шаблонах для вставки динамічного вмісту:</message>
+	<message key="plugins.generic.reviewerCertificate.settings.defaultTemplate">Типовий шаблон</message>
+	<message key="plugins.generic.reviewerCertificate.settings.useDefaultTemplate">Використовувати типовий шаблон</message>
+
+	<!-- Appearance settings -->
+	<message key="plugins.generic.reviewerCertificate.settings.appearance">Налаштування вигляду</message>
+	<message key="plugins.generic.reviewerCertificate.settings.fontFamily">Сімейство шрифтів</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.helvetica">Helvetica</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.times">Times New Roman</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.courier">Courier</message>
+	<message key="plugins.generic.reviewerCertificate.settings.font.dejavusans">DejaVu Sans</message>
+	<message key="plugins.generic.reviewerCertificate.settings.fontSize">Розмір шрифту</message>
+	<message key="plugins.generic.reviewerCertificate.settings.textColor">Колір тексту (RGB)</message>
+	<message key="plugins.generic.reviewerCertificate.settings.textColorDescription">Вкажіть колір тексту, використовуючи значення RGB (0-255 для кожного компонента)</message>
+
+	<!-- Eligibility settings -->
+	<message key="plugins.generic.reviewerCertificate.settings.eligibility">Критерії прийнятності</message>
+	<message key="plugins.generic.reviewerCertificate.settings.minimumReviews">Мінімальна кількість завершених рецензій</message>
+	<message key="plugins.generic.reviewerCertificate.settings.minimumReviewsDescription">Мінімальна кількість завершених рецензій, необхідна перед тим, як рецензент може отримати сертифікат</message>
+	<message key="plugins.generic.reviewerCertificate.settings.minimumReviewsInvalid">Мінімальна кількість рецензій має бути числом, більшим або рівним 1</message>
+
+	<!-- Verification -->
+	<message key="plugins.generic.reviewerCertificate.settings.verification">Параметри перевірки</message>
+	<message key="plugins.generic.reviewerCertificate.settings.includeQRCode">Включити QR-код для перевірки сертифіката</message>
+	<message key="plugins.generic.reviewerCertificate.settings.previewCertificate">Переглянути сертифікат</message>
+	<message key="plugins.generic.reviewerCertificate.settings.invalidImageType">Недійсний тип зображення. Будь ласка, завантажте файл JPG або PNG.</message>
+	<message key="plugins.generic.reviewerCertificate.settings.uploadFailed">Помилка завантаження файлу. Будь ласка, спробуйте ще раз.</message>
+
+	<!-- Error messages -->
+	<message key="plugins.generic.reviewerCertificate.error.reviewNotCompleted">Це рецензування ще не завершено. Сертифікати доступні лише для завершених рецензій.</message>
+	<message key="plugins.generic.reviewerCertificate.error.noCertificateCode">Код сертифіката не надано</message>
+	<message key="plugins.generic.reviewerCertificate.error.invalidCertificate">Недійсний код сертифіката. Цей сертифікат не може бути перевірений.</message>
+	<message key="plugins.generic.reviewerCertificate.error.noReviewersSelected">Не вибрано жодного рецензента для пакетного генерування сертифікатів</message>
+	<message key="plugins.generic.reviewerCertificate.error.accessDenied">Доступ заборонено. У вас немає дозволу на завантаження цього сертифіката.</message>
+	<message key="plugins.generic.reviewerCertificate.error.noContext">Контекст журналу недоступний. Переконайтеся, що ви отримуєте доступ з дійсного журналу.</message>
+	<message key="plugins.generic.reviewerCertificate.error.daoNotAvailable">Доступ до бази даних наразі недоступний. Зверніться до системного адміністратора.</message>
+
+	<!-- Verification -->
+	<message key="plugins.generic.reviewerCertificate.verify.title">Перевірити сертифікат</message>
+	<message key="plugins.generic.reviewerCertificate.verify.description">Введіть код сертифіката для перевірки його автентичності</message>
+	<message key="plugins.generic.reviewerCertificate.verify.code">Код сертифіката</message>
+	<message key="plugins.generic.reviewerCertificate.verify.button">Перевірити сертифікат</message>
+	<message key="plugins.generic.reviewerCertificate.verify.valid">Сертифікат дійсний</message>
+	<message key="plugins.generic.reviewerCertificate.verify.invalid">Сертифікат недійсний</message>
+	<message key="plugins.generic.reviewerCertificate.verify.invalidDescription">Введений вами код сертифіката недійсний або не існує в нашій системі.</message>
+	<message key="plugins.generic.reviewerCertificate.verify.certificateCode">Код сертифіката</message>
+	<message key="plugins.generic.reviewerCertificate.verify.reviewerName">Ім'я рецензента</message>
+	<message key="plugins.generic.reviewerCertificate.verify.journalName">Назва журналу</message>
+	<message key="plugins.generic.reviewerCertificate.verify.dateIssued">Дата видачі</message>
+
+	<!-- Batch generation -->
+	<message key="plugins.generic.reviewerCertificate.batch.title">Пакетне генерування сертифікатів</message>
+	<message key="plugins.generic.reviewerCertificate.batch.description">Генеруйте сертифікати для кількох рецензентів одночасно. Виберіть рецензентів зі списку нижче, які завершили рецензування, але ще не мають сертифікатів.</message>
+	<message key="plugins.generic.reviewerCertificate.batch.selectReviewers">Виберіть рецензентів</message>
+	<message key="plugins.generic.reviewerCertificate.batch.completedReviews">завершених рецензій</message>
+	<message key="plugins.generic.reviewerCertificate.batch.noEligibleReviewers">Прийнятних рецензентів не знайдено. Усі рецензенти мають сертифікати для своїх завершених рецензій.</message>
+	<message key="plugins.generic.reviewerCertificate.batch.selectMultipleHint">Утримуйте Ctrl (Windows/Linux) або Cmd (Mac) для вибору кількох рецензентів</message>
+	<message key="plugins.generic.reviewerCertificate.batch.generate">Генерувати сертифікати</message>
+	<message key="plugins.generic.reviewerCertificate.batch.generating">Генерування сертифікатів...</message>
+	<message key="plugins.generic.reviewerCertificate.batch.noSelection">Будь ласка, виберіть принаймні одного рецензента</message>
+	<message key="plugins.generic.reviewerCertificate.batch.certificatesGenerated">сертифікат(и/ів) успішно згенеровано</message>
+	<message key="plugins.generic.reviewerCertificate.batch.error">Виникла помилка під час генерування сертифікатів. Будь ласка, спробуйте ще раз.</message>
+	<message key="plugins.generic.reviewerCertificate.batch.generated">{$count} сертифікат(и/ів) успішно згенеровано</message>
+
+	<!-- Statistics -->
+	<message key="plugins.generic.reviewerCertificate.statistics.title">Статистика сертифікатів</message>
+	<message key="plugins.generic.reviewerCertificate.statistics.description">Огляд генерування та використання сертифікатів у вашому журналі</message>
+	<message key="plugins.generic.reviewerCertificate.statistics.totalCertificates">Всього видано сертифікатів</message>
+	<message key="plugins.generic.reviewerCertificate.statistics.totalDownloads">Всього завантажень</message>
+	<message key="plugins.generic.reviewerCertificate.statistics.uniqueReviewers">Унікальних рецензентів із сертифікатами</message>
+	<message key="plugins.generic.reviewerCertificate.stats.totalIssued">Всього видано сертифікатів</message>
+	<message key="plugins.generic.reviewerCertificate.stats.totalDownloads">Всього завантажень</message>
+	<message key="plugins.generic.reviewerCertificate.stats.averageDownloads">Середня кількість завантажень на сертифікат</message>
+</locale>
