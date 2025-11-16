@@ -36,12 +36,11 @@ The iterative development approach with Claude Code enabled rapid prototyping, t
 - **Eligibility Criteria**: Set minimum review requirements before certificates become available
 - **QR Code Verification**: Include QR codes for certificate authenticity verification
 - **Download Tracking**: Track certificate downloads and usage statistics
-- **Multi-language Support**: Full internationalization with native translations
-  - English (US)
-  - Ukrainian (Українська)
-  - Russian (Русский)
-  - Spanish (Español)
-  - More languages coming soon
+- **Multi-language Support**: Full internationalization with professional native translations
+  - 7 languages with complete coverage (82 message keys each)
+  - English (US), Ukrainian, Russian, Spanish, Portuguese (BR), French, German
+  - Automatic language detection from OJS settings
+  - All translations validated with comprehensive test suite
 - **Batch Generation**: Generate certificates for multiple reviewers at once
 
 ## Requirements
@@ -186,6 +185,9 @@ The Reviewer Certificate Plugin is fully internationalized and available in mult
 | Ukrainian | `uk_UA` | Українська | ✅ Complete |
 | Russian | `ru_RU` | Русский | ✅ Complete |
 | Spanish | `es_ES` | Español | ✅ Complete |
+| Portuguese (BR) | `pt_BR` | Português (Brasil) | ✅ Complete |
+| French | `fr_FR` | Français (France) | ✅ Complete |
+| German | `de_DE` | Deutsch (Deutschland) | ✅ Complete |
 
 ### Language Features
 
@@ -203,7 +205,7 @@ We welcome community contributions for additional languages! To contribute:
 3. Test your translation with the locale validation tests: `php vendor/bin/phpunit tests/Locale/LocaleValidationTest.php`
 4. Submit a pull request
 
-**Priority Languages Needed**: French, German, Portuguese (BR), Chinese, Turkish, Arabic
+**Priority Languages Needed**: Chinese, Turkish, Arabic, Japanese, Korean
 
 ## Usage
 
