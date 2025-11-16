@@ -36,7 +36,12 @@ The iterative development approach with Claude Code enabled rapid prototyping, t
 - **Eligibility Criteria**: Set minimum review requirements before certificates become available
 - **QR Code Verification**: Include QR codes for certificate authenticity verification
 - **Download Tracking**: Track certificate downloads and usage statistics
-- **Multi-language Support**: Full internationalization support
+- **Multi-language Support**: Full internationalization with native translations
+  - English (US)
+  - Ukrainian (Українська)
+  - Russian (Русский)
+  - Spanish (Español)
+  - More languages coming soon
 - **Batch Generation**: Generate certificates for multiple reviewers at once
 
 ## Requirements
@@ -168,6 +173,37 @@ Manuscript: {{$submissionTitle}}
 
 We deeply appreciate your expertise and dedication to advancing scholarly communication.
 ```
+
+## Language Support
+
+The Reviewer Certificate Plugin is fully internationalized and available in multiple languages:
+
+### Supported Languages
+
+| Language | Locale Code | Native Name | Status |
+|----------|-------------|-------------|--------|
+| English (US) | `en_US` | English | ✅ Complete |
+| Ukrainian | `uk_UA` | Українська | ✅ Complete |
+| Russian | `ru_RU` | Русский | ✅ Complete |
+| Spanish | `es_ES` | Español | ✅ Complete |
+
+### Language Features
+
+- **Automatic Detection**: The plugin automatically uses the language selected in your OJS installation
+- **UTF-8 Support**: Full support for Cyrillic, Latin, and other character sets
+- **Certificate Content**: All interface text is translated, but certificate templates can be customized in any language
+- **Template Variables**: Template variables like `{{$reviewerName}}` work in all languages
+
+### Contributing Translations
+
+We welcome community contributions for additional languages! To contribute:
+
+1. Copy `locale/en_US/locale.xml` to a new directory for your language (e.g., `locale/fr_FR/`)
+2. Translate all message strings while preserving template variables (e.g., `{{$reviewerName}}`)
+3. Test your translation with the locale validation tests: `php vendor/bin/phpunit tests/Locale/LocaleValidationTest.php`
+4. Submit a pull request
+
+**Priority Languages Needed**: French, German, Portuguese (BR), Chinese, Turkish, Arabic
 
 ## Usage
 
