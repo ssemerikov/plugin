@@ -11,7 +11,6 @@
  * @brief Reviewer Certificate Plugin - Enables reviewers to generate and download personalized PDF certificates
  */
 
-use PKP\plugins\GenericPlugin;
 use PKP\core\JSONMessage;
 use PKP\config\Config;
 use PKP\linkAction\LinkAction;
@@ -19,7 +18,7 @@ use PKP\linkAction\request\AjaxModal;
 use PKP\mail\MailTemplate;
 use APP\facades\Repo;
 
-class ReviewerCertificatePlugin extends GenericPlugin {
+class ReviewerCertificatePlugin extends \PKP\plugins\GenericPlugin {
 
     /**
      * @copydoc Plugin::register()
