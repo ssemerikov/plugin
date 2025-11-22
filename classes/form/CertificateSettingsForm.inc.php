@@ -11,14 +11,13 @@
  * @brief Form for managing certificate settings
  */
 
-use PKP\form\Form;
 use PKP\form\validation\FormValidator;
 use PKP\form\validation\FormValidatorPost;
 use PKP\form\validation\FormValidatorCSRF;
 use PKP\form\validation\FormValidatorCustom;
 use APP\facades\Repo;
 
-class CertificateSettingsForm extends Form {
+class CertificateSettingsForm extends \PKP\form\Form {
 
     /** @var ReviewerCertificatePlugin */
     private $plugin;

@@ -11,13 +11,12 @@
  * @brief Handle requests for certificate operations
  */
 
-use APP\handler\Handler;
 use PKP\core\JSONMessage;
 use PKP\security\Role;
 use PKP\security\authorization\ContextAccessPolicy;
 use APP\facades\Repo;
 
-class CertificateHandler extends Handler {
+class CertificateHandler extends \APP\handler\Handler {
 
     /** @var ReviewerCertificatePlugin */
     private $plugin;

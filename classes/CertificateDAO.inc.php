@@ -11,12 +11,11 @@
  * @brief Operations for retrieving and modifying Certificate objects
  */
 
-use PKP\db\DAO;
 use PKP\db\DAOResultFactory;
 
 require_once(dirname(__FILE__) . '/Certificate.inc.php');
 
-class CertificateDAO extends DAO {
+class CertificateDAO extends \PKP\db\DAO {
 
     /**
      * Retrieve a certificate by certificate ID
