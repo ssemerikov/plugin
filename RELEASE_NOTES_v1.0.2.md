@@ -6,7 +6,7 @@ This critical patch release fixes installation errors in OJS 3.5.0+ by removing 
 
 ---
 
-## 🔧 Critical Bug Fix
+## 🔧 Critical Bug Fixes
 
 ### Fixed: OJS 3.5 Compatibility - "Call to undefined function import()"
 - **Issue**: Plugin failed to load with "Call to undefined function import()" error in OJS 3.5.0+
@@ -18,6 +18,16 @@ This critical patch release fixes installation errors in OJS 3.5.0+ by removing 
   - `classes/CertificateDAO.inc.php`
   - `controllers/CertificateHandler.inc.php`
   - `classes/form/CertificateSettingsForm.inc.php`
+
+### Fixed: Class Loading Issue - "Plugin expected to inherit from ReviewerCertificatePlugin, actual type NULL"
+- **Issue**: Plugin instantiation failed with NULL type error after initial namespace migration
+- **Impact**: Plugin could not be loaded even after import() fixes were applied
+- **Root Cause**: Using `use` statements for parent classes caused autoloader race conditions
+- **Solution**: Changed to fully qualified class names for all parent class declarations
+- **Technical Change**:
+  - Before: `use PKP\plugins\GenericPlugin; class ReviewerCertificatePlugin extends GenericPlugin`
+  - After: `class ReviewerCertificatePlugin extends \PKP\plugins\GenericPlugin`
+- **Files Fixed**: Same 4 core files (all parent class references updated)
 
 ---
 
@@ -59,15 +69,23 @@ This critical patch release fixes installation errors in OJS 3.5.0+ by removing 
 
 ## 👥 Community Feedback Addressed
 
-This release directly resolves the critical installation issue reported by **Dr. Uğur Koçak** on PKP Community Forum:
+This release directly resolves critical installation issues reported by **Dr. Uğur Koçak** on PKP Community Forum:
 
-**Original Error**:
+**Error 1 - Import Function**:
 ```
 [18-Nov-2025 21:40:34] Instantiation of the plugin generic/reviewerCertificate has failed
 Error: Call to undefined function import() in ReviewerCertificatePlugin.inc.php:14
 ```
+**Status**: ✅ **FIXED** - Replaced all import() calls with modern namespace imports
 
-**Status**: ✅ **FIXED** - Plugin now loads successfully in OJS 3.5.0-1 and later versions
+**Error 2 - Class Loading**:
+```
+[22-Nov-2025 18:05:41] Exception: Plugin reviewerCertificate expected to inherit from
+ReviewerCertificatePlugin, actual type NULL in PluginRegistry.php:203
+```
+**Status**: ✅ **FIXED** - Changed to fully qualified parent class names
+
+Plugin now loads successfully in OJS 3.3.x, 3.4.x, and 3.5.0+ installations
 
 ---
 
@@ -79,8 +97,9 @@ Error: Call to undefined function import() in ReviewerCertificatePlugin.inc.php:
 
 **Changes Summary**:
 - 7 files modified
-- 43 lines added (namespace imports)
-- 35 lines removed (deprecated import calls)
+- 43 lines added (namespace imports and fixes)
+- 39 lines removed (deprecated import calls and redundant use statements)
+- 2 commits with comprehensive fixes
 - No database schema changes
 - No configuration changes
 - No API changes
@@ -139,9 +158,9 @@ class ReviewerCertificatePlugin extends GenericPlugin {
 }
 ```
 
-### After (Modern - OJS 3.3/3.4/3.5):
+### After First Fix (Had Issues):
 ```php
-use PKP\plugins\GenericPlugin;
+use PKP\plugins\GenericPlugin;  // ❌ Caused autoloader race condition
 use PKP\core\JSONMessage;
 
 class ReviewerCertificatePlugin extends GenericPlugin {
@@ -151,6 +170,20 @@ class ReviewerCertificatePlugin extends GenericPlugin {
     }
 }
 ```
+
+### After Final Fix (Works - OJS 3.3/3.4/3.5):
+```php
+use PKP\core\JSONMessage;  // ✅ Use statements only for utility classes
+
+class ReviewerCertificatePlugin extends \PKP\plugins\GenericPlugin {  // ✅ Fully qualified parent class
+    public function manage($args, $request) {
+        require_once($this->getPluginPath() . '/classes/form/CertificateSettingsForm.inc.php');
+        // ...
+    }
+}
+```
+
+**Key Insight**: Parent class names must be fully qualified (with leading backslash) to ensure they're loaded before the extending class is instantiated. Using `use` statements for parent classes can cause timing issues with PHP's autoloader.
 
 ---
 

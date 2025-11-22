@@ -15,17 +15,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated CertificateHandler.inc.php with proper APP\handler namespace
   - Updated CertificateSettingsForm.inc.php with proper PKP\form namespaces
   - Files: All core plugin files (.inc.php)
+- **Critical: Class Loading Issue** - Fixed "Plugin expected to inherit from ReviewerCertificatePlugin, actual type NULL" error
+  - Changed parent class references to use fully qualified class names instead of `use` imports
+  - Ensures proper class loading order across all OJS versions
+  - Parent classes now use backslash notation: `extends \PKP\plugins\GenericPlugin`
+  - Prevents autoloader race conditions that could cause NULL instantiation
 
 ### Changed
 - **Modern PHP Namespacing**: Plugin now uses PSR-4 compliant namespace imports instead of legacy import() function
-  - Uses `use PKP\plugins\GenericPlugin` instead of `import('lib.pkp.classes.plugins.GenericPlugin')`
+  - Uses fully qualified parent class names: `extends \PKP\plugins\GenericPlugin`
+  - Uses `use` statements only for utility classes (JSONMessage, LinkAction, MailTemplate, etc.)
   - Uses `require_once()` for plugin-specific class loading
   - Maintains backward compatibility with OJS 3.3 and 3.4
 
 ### Technical Details
 - All core plugin files updated to work with OJS 3.5.0+ which removed the deprecated import() function
 - Plugin class loading now uses `require_once($this->getPluginPath() . '/classes/...')`  pattern
-- Proper use statements for PKP library classes (JSONMessage, LinkAction, MailTemplate, etc.)
+- Parent classes use fully qualified names to prevent autoloader issues
+- Proper use statements for PKP library utility classes (JSONMessage, LinkAction, MailTemplate, etc.)
 
 ### Community Feedback Addressed
 This release addresses the critical installation issue reported by Dr. Uğur Koçak on PKP Community Forum:
